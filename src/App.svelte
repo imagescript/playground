@@ -47,6 +47,11 @@
   let activeRun: ActiveRun | null = null;
   let nextRunId = 0;
 
+  let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    theme = e.matches ? 'dark' : 'light';
+  });
+
   $: canRun = !running && inputBytes !== null;
 
   onMount(() => {
@@ -338,7 +343,7 @@
 <div class="app-shell">
   <header class="topbar">
     <a class="brand" href="https://imagescript.dev/" aria-label="ImageScript home">
-      <img src={`${import.meta.env.BASE_URL}brand/wordmark-dark.svg`} alt="ImageScript" class="brand-logo" />
+      <img src={`${import.meta.env.BASE_URL}brand/${theme === 'dark' ? 'wordmark-dark' : 'wordmark'}.svg`} alt="ImageScript" class="brand-logo" />
       <span class="brand-divider">/</span>
       <span class="brand-section">Playground</span>
     </a>
