@@ -71,23 +71,170 @@ const playgroundConsole = {
 };
 
 function getBinaryMime(bytes: Uint8Array): { mimeType: string; extension: string } {
-  if (bytes.length >= 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+  // PNG
+  if (
+    bytes.length >= 8 &&
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47
+  ) {
     return { mimeType: 'image/png', extension: 'png' };
   }
-  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+
+  // JPEG
+  if (
+    bytes.length >= 3 &&
+    bytes[0] === 0xff &&
+    bytes[1] === 0xd8 &&
+    bytes[2] === 0xff
+  ) {
     return { mimeType: 'image/jpeg', extension: 'jpg' };
   }
-  if (bytes.length >= 12 && String.fromCharCode(...bytes.subarray(0, 4)) === 'RIFF' && String.fromCharCode(...bytes.subarray(8, 12)) === 'WEBP') {
+
+  // WebP
+  if (
+    bytes.length >= 12 &&
+    String.fromCharCode(...bytes.subarray(0, 4)) === 'RIFF' &&
+    String.fromCharCode(...bytes.subarray(8, 12)) === 'WEBP'
+  ) {
     return { mimeType: 'image/webp', extension: 'webp' };
   }
-  if (bytes.length >= 6 && /^GIF8[79]a$/.test(String.fromCharCode(...bytes.subarray(0, 6)))) {
+
+  // GIF
+  if (
+    bytes.length >= 6 &&
+    /^GIF8[79]a$/.test(String.fromCharCode(...bytes.subarray(0, 6)))
+  ) {
     return { mimeType: 'image/gif', extension: 'gif' };
   }
-  if (bytes.length >= 12 && String.fromCharCode(...bytes.subarray(4, 8)) === 'ftyp') {
-    const brand = String.fromCharCode(...bytes.subarray(8, 12));
-    if (brand.includes('avif') || brand === 'avis') return { mimeType: 'image/avif', extension: 'avif' };
-    if (brand.includes('jxl')) return { mimeType: 'image/jxl', extension: 'jxl' };
+
+  // JPEG XL - raw codestream
+  // Signature: FF 0A
+  if (
+    bytes.length >= 2 &&
+    bytes[0] === 0xff &&
+    bytes[1] === 0x0a
+  ) {
+    return { mimeType: 'image/jxl', extension: 'jxl' };
   }
+
+  // JPEG XL - container
+  // Signature: 00 00 00 0C 4A 58 4C 20 0D 0A 87 0A
+  if (
+    bytes.length >= 12 &&
+    bytes[0] === 0x00 &&
+    bytes[1] === 0x00 &&
+    bytes[2] === 0x00 &&
+    bytes[3] === 0x0c &&
+    bytes[4] === 0x4a &&
+    bytes[5] === 0x58 &&
+    bytes[6] === 0x4c &&
+    bytes[7] === 0x20 &&
+    bytes[8] === 0x0d &&
+    bytes[9] === 0x0a &&
+    bytes[10] === 0x87 &&
+    bytes[11] === 0x0a
+  ) {
+    return { mimeType: 'image/jxl', extension: 'jxl' };
+  }
+
+  // AVIF
+  if (
+    bytes.length >= 12 &&
+    String.fromCharCode(...bytes.subarray(4, 8)) === 'ftyp'
+  ) {
+    const brand = String.fromCharCode(...bytes.subarray(8, 12));
+
+    if (brand === 'avif' || brand === 'avis') {
+      return { mimeType: 'image/avif', extension: 'avif' };
+    }
+  }
+
+  // BMP
+  // Signature: "BM"
+  if (
+    bytes.length >= 2 &&
+    bytes[0] === 0x42 &&
+    bytes[1] === 0x4d
+  ) {
+    return { mimeType: 'image/bmp', extension: 'bmp' };
+  }
+
+  // PNM
+  // P1/P4 = PBM
+  // P2/P5 = PGM
+  // P3/P6 = PPM
+  if (
+    bytes.length >= 3 &&
+    bytes[0] === 0x50 && // "P"
+    bytes[1] >= 0x31 &&
+    bytes[1] <= 0x36 &&
+    /\s/.test(String.fromCharCode(bytes[2]))
+  ) {
+    switch (bytes[1]) {
+      case 0x31: // P1
+      case 0x34: // P4
+        return { mimeType: 'image/x-portable-bitmap', extension: 'pbm' };
+
+      case 0x32: // P2
+      case 0x35: // P5
+        return { mimeType: 'image/x-portable-graymap', extension: 'pgm' };
+
+      case 0x33: // P3
+      case 0x36: // P6
+        return { mimeType: 'image/x-portable-pixmap', extension: 'ppm' };
+    }
+  }
+
+  // QOI
+  // Signature: "qoif"
+  if (
+    bytes.length >= 4 &&
+    bytes[0] === 0x71 &&
+    bytes[1] === 0x6f &&
+    bytes[2] === 0x69 &&
+    bytes[3] === 0x66
+  ) {
+    return { mimeType: 'image/qoi', extension: 'qoi' };
+  }
+
+  // TGA
+  //
+  // TGA has no reliable magic number at the beginning of the file.
+  // Validate the 18-byte header instead:
+  //   byte 1 = color map type: 0 or 1
+  //   byte 2 = image type: 1, 2, 3, 9, 10 or 11
+  //   byte 16 = pixel depth: typically 8, 15, 16, 24 or 32
+  if (bytes.length >= 18) {
+    const colorMapType = bytes[1];
+    const imageType = bytes[2];
+    const pixelDepth = bytes[16];
+
+    const validColorMapType =
+      colorMapType === 0 ||
+      colorMapType === 1;
+
+    const validImageType =
+      imageType === 1 ||  // color-mapped
+      imageType === 2 ||  // true-color
+      imageType === 3 ||  // grayscale
+      imageType === 9 ||  // RLE color-mapped
+      imageType === 10 || // RLE true-color
+      imageType === 11;   // RLE grayscale
+
+    const validPixelDepth =
+      pixelDepth === 8 ||
+      pixelDepth === 15 ||
+      pixelDepth === 16 ||
+      pixelDepth === 24 ||
+      pixelDepth === 32;
+
+    if (validColorMapType && validImageType && validPixelDepth) {
+      return { mimeType: 'image/x-tga', extension: 'tga' };
+    }
+  }
+
   return { mimeType: 'application/octet-stream', extension: 'bin' };
 }
 
