@@ -69,9 +69,9 @@
 
     editor = createCodeEditor(editorHost, code, (value) => {
       code = value;
-      void encodeCodeToHash(value).then((hash) => {
-        window.history.replaceState(null, '', hash);
-      });
+      if (window.location.hash.startsWith('#code=')) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
     }, () => {
       void runCode();
     });
@@ -140,7 +140,9 @@
     try {
       const currentCode = editor?.getValue() ?? code;
       const hash = await encodeCodeToHash(currentCode);
-      const shareUrl = `${window.location.origin}${window.location.pathname}${hash}`;
+      
+      window.history.replaceState(null, '', `${window.location.pathname}${hash}`);
+      const shareUrl = window.location.href;
       
       await navigator.clipboard.writeText(shareUrl);
       shared = true;
