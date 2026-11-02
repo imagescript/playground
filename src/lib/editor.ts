@@ -115,7 +115,7 @@ function configureMonaco(): void {
       const b = Math.round(blue * 255).toString(16).padStart(2, '0');
       const a = Math.round(alpha * 255).toString(16).padStart(2, '0');
 
-      const hexVal = `0x${r}${g}${b}${a}`.toUpperCase();
+      const hexVal = `0x${`${r}${g}${b}${a}`.toUpperCase()}`;
 
       return [{
         label: hexVal,

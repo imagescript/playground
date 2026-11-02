@@ -41,6 +41,7 @@
   let errorMessage = '';
   let timeoutSeconds = 20;
   let copied = false;
+  let shared = false;
 
   let executionWorker: Worker | null = null;
   let workerReady: Promise<Worker> | null = null;
@@ -55,14 +56,26 @@
   $: canRun = !running && inputBytes !== null;
 
   onMount(() => {
+    async function initEditor() {
+      const sharedCode = await decodeCodeFromHash();
+      if (sharedCode) {
+        code = sharedCode;
+        activeExampleDescription = 'Custom shared code snippet';
+        editor?.setValue(sharedCode);
+      }
+    }
+
+    void initEditor();
+
     editor = createCodeEditor(editorHost, code, (value) => {
       code = value;
+      void encodeCodeToHash(value).then((hash) => {
+        window.history.replaceState(null, '', hash);
+      });
     }, () => {
       void runCode();
     });
 
-    // Capture the shortcut before Monaco's internal key handling. This keeps
-    // Ctrl+Enter / Cmd+Enter reliable even when a completion widget is open.
     const handleRunShortcut = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && editorHost.contains(document.activeElement)) {
         event.preventDefault();
@@ -83,6 +96,59 @@
       if (output?.url) URL.revokeObjectURL(output.url);
     };
   });
+
+  async function encodeCodeToHash(source: string): Promise<string> {
+    const bytes = new TextEncoder().encode(source);
+    const stream = new Response(bytes).body!.pipeThrough(new CompressionStream('deflate-raw'));
+    const compressedBytes = new Uint8Array(await new Response(stream).arrayBuffer());
+    
+    let binary = '';
+    for (let i = 0; i < compressedBytes.byteLength; i++) {
+      binary += String.fromCharCode(compressedBytes[i]);
+    }
+    const base64 = btoa(binary)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    return `#code=${base64}`;
+  }
+
+  async function decodeCodeFromHash(): Promise<string | null> {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#code=')) return null;
+    const base64 = hash.substring(6);
+
+    try {
+      const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+      const base64Standard = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const binary = atob(base64Standard);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+
+      const stream = new Response(bytes).body!.pipeThrough(new DecompressionStream('deflate-raw'));
+      const decompressedBytes = await new Response(stream).arrayBuffer();
+      return new TextDecoder().decode(decompressedBytes);
+    } catch {
+      return null;
+    }
+  }
+
+  async function shareCode(): Promise<void> {
+    try {
+      const currentCode = editor?.getValue() ?? code;
+      const hash = await encodeCodeToHash(currentCode);
+      const shareUrl = `${window.location.origin}${window.location.pathname}${hash}`;
+      
+      await navigator.clipboard.writeText(shareUrl);
+      shared = true;
+      window.setTimeout(() => shared = false, 1800);
+    } catch {
+      statusMessage = 'Could not copy link';
+    }
+  }
 
   async function loadDefaultImage(): Promise<void> {
     try {
@@ -270,8 +336,6 @@
 
     if (!running || runId !== nextRunId) return;
 
-    // Start only after the worker has sent `ready`, which means its module graph
-    // (including ImageScript) has finished loading and evaluating.
     const startedAt = performance.now();
     const timeoutId = window.setTimeout(() => {
       if (activeRun?.id !== runId) return;
@@ -338,8 +402,6 @@
   }
 </script>
 
-
-
 <div class="app-shell">
   <header class="topbar">
     <a class="brand" href="https://imagescript.dev/" aria-label="ImageScript home">
@@ -377,15 +439,32 @@
         </div>
       </div>
       <div class="toolbar-right">
-        <button class="quiet-button" type="button" onclick={copyCode} title="Copy code">{copied ? 'Copied' : 'Copy'}</button>
-        <button class="quiet-button" type="button" onclick={resetCode} title="Reset the selected example">Reset</button>
-        <span class="shortcut-hint"><kbd>Ctrl / ⌘</kbd><kbd>↵</kbd></span>
-        <button class="run-button" type="button" onclick={() => runCode()} disabled={!canRun}>
+        <!-- Share Button -->
+        <button class="quiet-button" type="button" onclick={shareCode} title="Share code as URL">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13.3 6.7H16c.6 0 1 .4 1 1v8c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-8c0-.6.4-1 1-1h2.7M10 3.3v7.4m0-7.4L7.5 5.8M10 3.3l2.5 2.5"/></svg>
+          {shared ? 'Link copied!' : 'Share'}
+        </button>
+
+        <!-- Copy Button -->
+        <button class="quiet-button" type="button" onclick={copyCode} title="Copy code">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7.5" y="7.5" width="9" height="9" rx="1.5"/><path d="M12.5 7.5V5.7c0-.7-.5-1.2-1.2-1.2H4.7C4 4.5 3.5 5 3.5 5.7v7.8c0 .7.5 1.2 1.2 1.2h1.8"/></svg>
+          {copied ? 'Copied' : 'Copy'}
+        </button>
+
+        <!-- Reset Button -->
+        <button class="quiet-button" type="button" onclick={resetCode} title="Reset the selected example">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 10a6.5 6.5 0 1 1 1.9 4.6L3.5 16.5m0-6.5v4h4"/></svg>
+          Reset
+        </button>
+
+        <!-- Run Button mit integriertem Shortcut-Badge -->
+        <button class="run-button" type="button" onclick={() => runCode()} disabled={!canRun} title="Run code (Ctrl + Enter)">
           {#if running}
             <span class="spinner"></span> Running
           {:else}
             <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6.4 4.7c0-.6.7-1 1.2-.7l8.1 5.1a1 1 0 0 1 0 1.7l-8.1 5.1c-.5.3-1.2 0-1.2-.7V4.7Z"/></svg>
             Run
+            <span class="run-shortcut"><kbd>Ctrl</kbd><kbd>↵</kbd></span>
           {/if}
         </button>
       </div>
@@ -397,7 +476,7 @@
           <div class="panel-heading">
             <span class="file-tab"><span class="file-dot"></span>main.js</span>
           </div>
-          <span class="panel-meta">JavaScript · Monaco</span>
+          <span class="panel-meta">JavaScript</span>
         </div>
         <div class="example-description">
           {activeExampleDescription}
