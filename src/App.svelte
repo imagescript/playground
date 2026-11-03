@@ -1,5 +1,6 @@
 <script lang="ts">
-    import type { PlaygroundEditor } from './lib/editor';
+    import { onMount } from 'svelte';
+  import type { PlaygroundEditor } from './lib/editor';
   import { examples } from './lib/examples';
   import { createCodeEditor } from './lib/editor';
 
@@ -22,7 +23,7 @@
     | { type: 'error'; runId: number; message: string; stack?: string };
   type ActiveRun = { id: number; startedAt: number; timeoutId: number };
 
-  let editorHost: HTMLDivElement | undefined = $state();
+  let editorHost: HTMLDivElement | undefined = undefined;
   let fileInput: HTMLInputElement | undefined;
   let editor: PlaygroundEditor | undefined;
   let code = $state(examples[0].code);
@@ -53,8 +54,7 @@
 
   let canRun = $derived(!running && inputBytes !== null);
 
-  $effect.pre(() => {
-    if (!editorHost || editor) return;
+  onMount(() => {
     async function initEditor() {
       const sharedCode = await decodeCodeFromHash();
       if (sharedCode) {
@@ -66,7 +66,7 @@
 
     void initEditor();
 
-    editor = createCodeEditor(editorHost, code, (value) => {
+    editor = createCodeEditor(editorHost!, code, (value) => {
       code = value;
       if (window.location.hash.startsWith('#code=')) {
         window.history.replaceState(null, '', window.location.pathname);
@@ -76,7 +76,7 @@
     });
 
     const handleRunShortcut = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && editorHost.contains(document.activeElement)) {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && editorHost?.contains(document.activeElement)) {
         event.preventDefault();
         event.stopPropagation();
         void runCode();
