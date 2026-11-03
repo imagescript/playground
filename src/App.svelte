@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import type { PlaygroundEditor } from './lib/editor';
+    import type { PlaygroundEditor } from './lib/editor';
   import { examples } from './lib/examples';
   import { createCodeEditor } from './lib/editor';
 
@@ -23,39 +22,39 @@
     | { type: 'error'; runId: number; message: string; stack?: string };
   type ActiveRun = { id: number; startedAt: number; timeoutId: number };
 
-  let editorHost: HTMLDivElement;
+  let editorHost: HTMLDivElement | undefined = $state();
   let fileInput: HTMLInputElement | undefined;
   let editor: PlaygroundEditor | undefined;
-  let code = examples[0].code;
-  let canRun = false;
-  let selectedExample = examples[0].id;
-  let activeExampleDescription = examples[0].description;
-  let inputBytes: Uint8Array | null = null;
-  let inputName = 'demo-image.png';
-  let inputSize = 0;
-  let inputUrl = '';
-  let output: Output | null = null;
-  let logs: LogEntry[] = [];
-  let running = false;
-  let statusMessage = 'Ready';
-  let errorMessage = '';
-  let timeoutSeconds = 20;
-  let copied = false;
-  let shared = false;
+  let code = $state(examples[0].code);
+  let selectedExample = $state(examples[0].id);
+  let activeExampleDescription = $state(examples[0].description);
+  let inputBytes: Uint8Array | null = $state(null);
+  let inputName = $state('demo-image.png');
+  let inputSize = $state(0);
+  let inputUrl = $state('');
+  let output: Output | null = $state(null);
+  let logs: LogEntry[] = $state([]);
+  let running = $state(false);
+  let statusMessage = $state('Ready');
+  let errorMessage = $state('');
+  let timeoutSeconds = $state(20);
+  let copied = $state(false);
+  let shared = $state(false);
 
-  let executionWorker: Worker | null = null;
-  let workerReady: Promise<Worker> | null = null;
-  let activeRun: ActiveRun | null = null;
-  let nextRunId = 0;
+  let executionWorker: Worker | null = $state(null);
+  let workerReady: Promise<Worker> | null = $state(null);
+  let activeRun: ActiveRun | null = $state(null);
+  let nextRunId = $state(0);
 
-  let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  let theme = $state(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     theme = e.matches ? 'dark' : 'light';
   });
 
-  $: canRun = !running && inputBytes !== null;
+  let canRun = $derived(!running && inputBytes !== null);
 
-  onMount(() => {
+  $effect.pre(() => {
+    if (!editorHost || editor) return;
     async function initEditor() {
       const sharedCode = await decodeCodeFromHash();
       if (sharedCode) {
