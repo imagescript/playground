@@ -8,6 +8,7 @@ import {
   TextLayout,
   decode
 } from 'imagescript';
+import { fonts, samples } from './assets';
 
 type RunRequest = {
   type: 'run';
@@ -27,6 +28,35 @@ type WorkerResponse =
 const scope = self as DedicatedWorkerGlobalScope;
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor as new (...args: string[]) => (...args: unknown[]) => Promise<unknown>;
 let activeRunId = 0;
+
+// Fonts and sample images are fetched once per worker; every call gets its own copy, so code may modify it
+const assetBase = new URL(import.meta.env.BASE_URL, self.location.origin);
+const assetCache = new Map<string, Promise<ArrayBuffer>>();
+
+async function fetchAsset(path: string): Promise<Uint8Array> {
+  let pending = assetCache.get(path);
+  if (!pending) {
+    pending = fetch(new URL(path, assetBase)).then((response) => {
+      if (!response.ok) throw new Error(`Could not load ${path} (${response.status})`);
+      return response.arrayBuffer();
+    });
+    pending.catch(() => assetCache.delete(path));
+    assetCache.set(path, pending);
+  }
+  return new Uint8Array((await pending).slice(0));
+}
+
+function loadFont(id: string): Promise<Uint8Array> {
+  const font = fonts.find((item) => item.id === id);
+  if (!font) throw new Error(`Unknown font "${id}", available: ${fonts.map((item) => item.id).join(', ')}`);
+  return fetchAsset(`fonts/${font.file}`);
+}
+
+function loadSample(id: string): Promise<Uint8Array> {
+  const sample = samples.find((item) => item.id === id);
+  if (!sample) throw new Error(`Unknown sample "${id}", available: ${samples.map((item) => item.id).join(', ')}`);
+  return fetchAsset(`samples/${sample.file}`);
+}
 
 function stringify(value: unknown): string {
   if (typeof value === 'string') return value;
@@ -260,25 +290,18 @@ scope.onmessage = async (event: MessageEvent<RunRequest>) => {
     const input = new Uint8Array(event.data.input);
     const execute = new AsyncFunction(
       'Image', 'Animation', 'AnimationEncoder', 'Frame', 'GIF', 'ImageType', 'TextLayout', 'decode', 'input', 'console',
+      'loadFont', 'loadSample',
       `${event.data.code}\n//# sourceURL=imagescript-playground-user-code.js`
     );
 
     const result = await execute(
-      Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, input, playgroundConsole
+      Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, input, playgroundConsole,
+      loadFont, loadSample
     );
 
+    // Animations are shown as GIFs (return encodeWebP()/encodeAPNG() bytes for other formats)
     if (result instanceof Animation) {
-      scope.postMessage({
-        type: 'result', runId, kind: 'json',
-        value: stringify({
-          type: result instanceof GIF ? 'GIF' : 'Animation',
-          frameCount: result.frames.length,
-          duration: result.duration,
-          width: result.width,
-          height: result.height,
-          loopCount: result.loopCount
-        })
-      } satisfies WorkerResponse);
+      postBinary(runId, await result.encodeGIF());
       return;
     }
 

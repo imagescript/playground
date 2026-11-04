@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
   import type { PlaygroundEditor } from './lib/editor';
   import { examples } from './lib/examples';
+  import { fonts, samples, type FontId, type SampleId } from './lib/assets';
   import { createCodeEditor } from './lib/editor';
 
   type LogEntry = { level: 'log' | 'info' | 'warn' | 'error'; message: string };
@@ -30,9 +31,16 @@
   let selectedExample = $state(examples[0].id);
   let activeExampleDescription = $state(examples[0].description);
   let inputBytes: Uint8Array | null = $state(null);
-  let inputName = $state('demo-image.png');
+  let inputName = $state('');
   let inputSize = $state(0);
   let inputUrl = $state('');
+  // the selected sample, or 'custom' for the uploaded image (kept while samples are selected, to switch back to it)
+  let inputSource: SampleId | 'custom' = $state(examples[0].sample ?? samples[0].id);
+  let customInput: { bytes: Uint8Array; name: string; blob: Blob } | null = $state(null);
+  let inputLoad = 0;
+  let fontsOpen = $state(false);
+  let fontsPanel: HTMLDivElement | undefined = $state();
+  let fontsButton: HTMLButtonElement | undefined = $state();
   let output: Output | null = $state(null);
   let logs: LogEntry[] = $state([]);
   let running = $state(false);
@@ -84,7 +92,7 @@
     };
     window.addEventListener('keydown', handleRunShortcut, true);
 
-    void loadDefaultImage();
+    void selectSample(inputSource === 'custom' ? samples[0].id : inputSource);
 
     return () => {
       window.removeEventListener('keydown', handleRunShortcut, true);
@@ -151,20 +159,50 @@
     }
   }
 
-  async function loadDefaultImage(): Promise<void> {
+  async function selectSample(id: SampleId, run = true): Promise<void> {
+    const sample = samples.find((item) => item.id === id) ?? samples[0];
+    const load = ++inputLoad;
+    inputSource = sample.id;
     try {
-      const response = await fetch(`${import.meta.env.BASE_URL}demo-image.png`);
+      const response = await fetch(`${import.meta.env.BASE_URL}samples/${sample.file}`);
       if (!response.ok) throw new Error(`Could not load sample image (${response.status})`);
       const blob = await response.blob();
-      inputBytes = new Uint8Array(await blob.arrayBuffer());
-      inputName = 'demo-image.png';
-      inputSize = blob.size;
-      setInputPreview(blob);
-      statusMessage = 'Ready';
-      runCode();
+      const bytes = new Uint8Array(await blob.arrayBuffer());
+      if (load !== inputLoad) return; // another input was selected meanwhile
+      setInput(bytes, sample.file, blob);
+      if (run) runCode();
     } catch (error) {
+      if (load !== inputLoad) return;
       errorMessage = error instanceof Error ? error.message : String(error);
       statusMessage = 'Input unavailable';
+    }
+  }
+
+  function setInput(bytes: Uint8Array, name: string, blob: Blob): void {
+    inputBytes = bytes;
+    inputName = name;
+    inputSize = blob.size;
+    setInputPreview(blob);
+    clearPreviousOutput();
+    logs = [];
+    errorMessage = '';
+    statusMessage = 'Ready';
+  }
+
+  function handleInputSelect(event: Event): void {
+    const target = event.currentTarget as HTMLSelectElement;
+    const value = target.value;
+    if (value === 'upload') {
+      target.value = inputSource; // the picker keeps showing the current input until a file is chosen
+      fileInput?.click();
+    } else if (value === 'custom') {
+      if (!customInput) return;
+      inputLoad++;
+      inputSource = 'custom';
+      setInput(customInput.bytes, customInput.name, customInput.blob);
+      runCode();
+    } else {
+      void selectSample(value as SampleId);
     }
   }
 
@@ -175,10 +213,10 @@
 
   function handleExampleSelect(event: Event): void {
     const target = event.currentTarget as HTMLSelectElement;
-    loadExample(target.value);
+    void loadExample(target.value);
   }
 
-  function loadExample(id: string): void {
+  async function loadExample(id: string): Promise<void> {
     const example = examples.find((item) => item.id === id);
     if (!example) return;
     selectedExample = id;
@@ -189,7 +227,26 @@
     logs = [];
     errorMessage = '';
     statusMessage = 'Ready';
+    // switch to the sample the example is made for, but never away from an uploaded image
+    if (example.sample && inputSource !== 'custom' && inputSource !== example.sample) {
+      await selectSample(example.sample, false);
+    }
     runCode();
+  }
+
+  function insertFont(id: FontId): void {
+    fontsOpen = false;
+    if (!editor) return;
+    const selection = editor.getSelection();
+    if (!selection) return;
+    editor.executeEdits('font-list', [{ range: selection, text: `await loadFont('${id}')`, forceMoveMarkers: true }]);
+    editor.focus();
+  }
+
+  function handleWindowClick(event: MouseEvent): void {
+    if (!fontsOpen) return;
+    const target = event.target as Node;
+    if (!fontsPanel?.contains(target) && !fontsButton?.contains(target)) fontsOpen = false;
   }
 
   async function handleFileChange(event: Event): Promise<void> {
@@ -204,14 +261,11 @@
     }
 
     try {
-      inputBytes = new Uint8Array(await file.arrayBuffer());
-      inputName = file.name;
-      inputSize = file.size;
-      setInputPreview(file);
-      clearPreviousOutput();
-      logs = [];
-      errorMessage = '';
-      statusMessage = 'Ready';
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      inputLoad++;
+      customInput = { bytes, name: file.name, blob: file };
+      inputSource = 'custom';
+      setInput(bytes, file.name, file);
       runCode();
     } catch (error) {
       errorMessage = error instanceof Error ? error.message : String(error);
@@ -393,15 +447,13 @@
   }
 
   function resetCode(): void {
+    // the example's code and sample (an uploaded image stays), run again
     const example = examples.find((item) => item.id === selectedExample) ?? examples[0];
-    code = example.code;
-    activeExampleDescription = example.description;
-    editor?.setValue(example.code);
-    statusMessage = 'Editor reset';
-
-    void loadDefaultImage();
+    void loadExample(example.id);
   }
 </script>
+
+<svelte:window onclick={handleWindowClick} onkeydown={(event) => { if (event.key === 'Escape') fontsOpen = false; }} />
 
 <div class="app-shell">
   <header class="topbar">
@@ -431,12 +483,52 @@
         <span class="toolbar-divider"></span>
         <div class="input-file-label">
           <span class="control-label">INPUT</span>
-          <button class="file-button" type="button" onclick={() => fileInput?.click()} title="Choose an image">
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13.5V3.8m0 0L6.6 7.2M10 3.8l3.4 3.4M4 12.8v2.3c0 .6.5 1.1 1.1 1.1h9.8c.6 0 1.1-.5 1.1-1.1v-2.3"/></svg>
-            <span>{inputName}</span>
+          <div class="input-picker">
+            {#if inputUrl}<img class="input-thumb" src={inputUrl} alt="" />{/if}
+            <select value={inputSource} onchange={handleInputSelect} aria-label="Choose the input image" title={inputSource === 'custom' ? inputName : samples.find((item) => item.id === inputSource)?.description}>
+              {#each samples as sample}
+                <option value={sample.id}>{sample.name}</option>
+              {/each}
+              {#if customInput}<option value="custom">{customInput.name}</option>{/if}
+              <option value="upload">Upload an image…</option>
+            </select>
             <span class="file-size">{inputSize ? formatBytes(inputSize) : '—'}</span>
-          </button>
+          </div>
           <input bind:this={fileInput} class="visually-hidden" type="file" accept="image/*,.jxl,.tif,.tiff,.ico,.cur,.qoi,.tga,.ppm,.pgm,.pbm,.pam,.pfm,.hdr" aria-label="Upload an image" onchange={handleFileChange} />
+        </div>
+        <span class="toolbar-divider"></span>
+        <div class="fonts-wrap">
+          <button bind:this={fontsButton} class="quiet-button fonts-button" type="button" onclick={() => fontsOpen = !fontsOpen} aria-expanded={fontsOpen} aria-haspopup="dialog" title="Fonts you can use with loadFont()">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 16 9 4h1l5 12M6.2 11.5h7.6"/></svg>
+            Fonts
+          </button>
+          {#if fontsOpen}
+            <div bind:this={fontsPanel} class="fonts-panel" role="dialog" aria-label="Bundled fonts">
+              <div class="fonts-panel-header">
+                <span>Bundled fonts</span>
+                <span class="fonts-panel-hint">Click one to insert <code>await loadFont(…)</code> at the cursor</span>
+              </div>
+              <ul>
+                {#each fonts as font}
+                  <li>
+                    <button type="button" onclick={() => insertFont(font.id)}>
+                      <span class="font-row-top">
+                        <span class="font-name">{font.name}</span>
+                        <span class="font-meta">{font.category} · {formatBytes(font.size)}</span>
+                      </span>
+                      <span class="font-id">'{font.id}'</span>
+                      <span class="font-notes">{font.notes}</span>
+                    </button>
+                  </li>
+                {/each}
+              </ul>
+              <div class="fonts-panel-footer">
+                <button type="button" class="link-button" onclick={() => { fontsOpen = false; void loadExample('font-specimen'); }}>See them all rendered</button>
+                <a href={`${import.meta.env.BASE_URL}fonts/LICENSES.txt`} target="_blank" rel="noreferrer">Font licenses</a>
+                <a href={`${import.meta.env.BASE_URL}samples/CREDITS.md`} target="_blank" rel="noreferrer">Image credits</a>
+              </div>
+            </div>
+          {/if}
         </div>
       </div>
       <div class="toolbar-right">

@@ -164,17 +164,35 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid
 .toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 16px; min-width: 0; }
 .example-select-wrap, .input-file-label { min-width: 0; display: flex; flex-direction: column; gap: 5px; position: relative; }
 .control-label { color: var(--muted); font: 9px var(--mono); letter-spacing: .08em; }
-.example-select-wrap select { appearance: none; border: 0; background: transparent; color: var(--select-color); padding: 1px 23px 1px 0; width: 190px; max-width: 25vw; cursor: pointer; font-size: 12px; font-weight: 550; outline: none; }
+.example-select-wrap select { appearance: none; border: 0; background: transparent; color: var(--select-color); padding: 1px 23px 1px 0; width: 270px; max-width: 28vw; text-overflow: ellipsis; cursor: pointer; font-size: 12px; font-weight: 550; outline: none; }
 .example-select-wrap select option { background: var(--select-option-bg); color: var(--text); }
 .example-select-wrap::after { content: ""; position: absolute; width: 6px; height: 6px; right: 4px; bottom: 5px; border-right: 1px solid var(--muted); border-bottom: 1px solid var(--muted); transform: rotate(45deg); pointer-events: none; }
 .toolbar-divider { height: 31px; width: 1px; flex: 0 0 1px; background: var(--border); }
-.file-button { min-width: 0; padding: 0; display: flex; align-items: center; gap: 7px; background: none; border: none; color: var(--file-btn-color); font-size: 11px; }
-.file-button svg { width: 14px; height: 14px; flex: 0 0 auto; fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.file-button span:nth-of-type(1) { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .file-size { color: var(--muted-dim); font: 9px var(--mono); white-space: nowrap; }
-.file-button:hover span:nth-of-type(1) { color: var(--file-btn-hover); }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .toolbar-right { gap: 7px; }
+.input-picker { display: flex; align-items: center; gap: 7px; min-width: 0; position: relative; }
+.input-picker select { appearance: none; border: 0; background: transparent; color: var(--file-btn-color); padding: 1px 16px 1px 0; max-width: 170px; cursor: pointer; font-size: 11px; outline: none; text-overflow: ellipsis; }
+.input-picker select:hover { color: var(--file-btn-hover); }
+.input-picker select option { background: var(--select-option-bg); color: var(--text); }
+.input-thumb { width: 22px; height: 16px; object-fit: cover; border-radius: 2px; border: 1px solid var(--border); flex: 0 0 auto; background: repeating-conic-gradient(#8884 0 25%, transparent 0 50%) 50% / 8px 8px; }
+.fonts-wrap { position: relative; }
+.fonts-button { font-size: 11px; }
+.fonts-panel { position: absolute; z-index: 20; top: calc(100% + 8px); left: 0; width: min(420px, calc(100vw - 40px)); max-height: min(560px, 70vh); display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 7px; box-shadow: 0 12px 32px #0006; overflow: hidden; }
+.fonts-panel-header { padding: 11px 13px 9px; display: flex; flex-direction: column; gap: 3px; border-bottom: 1px solid var(--border-soft); color: var(--text); font-size: 12px; font-weight: 600; }
+.fonts-panel-hint { color: var(--muted); font-size: 10px; font-weight: 400; }
+.fonts-panel-hint code, .font-id { font-family: var(--mono); }
+.fonts-panel ul { list-style: none; margin: 0; padding: 4px; overflow-y: auto; }
+.fonts-panel li button { width: 100%; display: flex; flex-direction: column; gap: 2px; padding: 8px 9px; border: 0; border-radius: 5px; background: transparent; color: var(--text); text-align: left; cursor: pointer; }
+.fonts-panel li button:hover, .fonts-panel li button:focus-visible { background: var(--quiet-btn-hover-bg); outline: none; }
+.font-row-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.font-name { font-size: 12px; font-weight: 600; }
+.font-meta { color: var(--muted); font-size: 9px; font-family: var(--mono); white-space: nowrap; }
+.font-id { color: var(--accent); font-size: 10px; }
+.font-notes { color: var(--muted); font-size: 10px; line-height: 1.4; }
+.fonts-panel-footer { display: flex; gap: 14px; padding: 9px 13px; border-top: 1px solid var(--border-soft); font-size: 10px; }
+.fonts-panel-footer a, .link-button { color: var(--muted); text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; font-size: 10px; }
+.fonts-panel-footer a:hover, .link-button:hover { color: var(--text); }
 
 /* --- Buttons --- */
 .quiet-button { display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px; border: 1px solid transparent; border-radius: 4px; background: transparent; color: var(--quiet-btn-color); font-size: 10px; transition: all .15s; }
@@ -306,7 +324,8 @@ kbd { font: 9px var(--mono); padding: 3px 5px; border: 1px solid var(--kbd-borde
   .main-content { width: min(94vw, 760px); }
   .topbar { padding: 0 3vw; }
   .toolbar { flex-wrap: wrap; }
-  .toolbar-left { flex: 1; }
+  .toolbar-left { flex: 1; flex-wrap: wrap; row-gap: 10px; }
+  .example-select-wrap select { max-width: 40vw; }
   .workspace { grid-template-columns: 1fr; }
   .editor-panel, .output-panel { min-height: 460px; }
   .editor-wrap, .output-stage { min-height: 380px; }
@@ -323,7 +342,9 @@ kbd { font: 9px var(--mono); padding: 3px 5px; border: 1px solid var(--kbd-borde
   .example-select-wrap { flex: 1; }
   .example-select-wrap select { width: 100%; max-width: none; }
   .input-file-label { flex: 1; }
-  .file-button span:nth-of-type(1) { max-width: 100px; }
+  .input-picker select { max-width: 110px; }
+  .input-picker .file-size { display: none; }
+  .fonts-panel { position: fixed; top: 64px; left: 10px; right: 10px; width: auto; max-height: calc(100vh - 84px); }
   .toolbar-right { justify-content: flex-end; width: 100%; }
   .panel-header { padding: 0 11px; }
   .editor-panel, .output-panel { min-height: 420px; }

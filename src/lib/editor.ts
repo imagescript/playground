@@ -1,18 +1,7 @@
 import * as monaco from 'monaco-editor';
 import EditorWorker from 'monaco-editor/editor/editor.worker.js?worker';
 import TypeScriptWorker from 'monaco-editor/language/typescript/ts.worker.js?worker';
-
-const globals = `
-declare const Image: typeof import('imagescript').Image;
-declare const Animation: typeof import('imagescript').Animation;
-declare const AnimationEncoder: typeof import('imagescript').AnimationEncoder;
-declare const Frame: typeof import('imagescript').Frame;
-declare const GIF: typeof import('imagescript').GIF;
-declare const ImageType: typeof import('imagescript').ImageType;
-declare const TextLayout: typeof import('imagescript').TextLayout;
-declare const decode: typeof import('imagescript').decode;
-declare const input: Uint8Array;
-`;
+import { playgroundGlobals as globals } from './globals.ts';
 
 let configured = false;
 
