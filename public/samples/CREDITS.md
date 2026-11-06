@@ -13,4 +13,5 @@ Public domain:
 - `horse.gif`: [The Horse in Motion, Sallie Gardner, animation](https://commons.wikimedia.org/wiki/File:Horse_in_Motion_-_Sallie_Gardner_(animation).gif)
   (Eadweard Muybridge, 1878), resized
 
-`illustration.png` was made for the playground.
+`illustration.png` was made for the playground. `concorde.jpg` (the Concorde under scaffolding at the Technik Museum
+Sinsheim, an Ultra HDR JPEG from a Pixel phone, with its gain map) was taken by Mathis Mensing for the playground.

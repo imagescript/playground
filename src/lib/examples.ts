@@ -50,6 +50,18 @@ export const exampleList = [
     description: 'Encodes the same crop with all four lossy encoders at a low quality, decodes the results and shows them enlarged, labeled with file size and encoding time: JPEG\'s blocks and ringing, WebP\'s smearing, AVIF\'s and JPEG XL\'s smoother loss of detail.'
   },
   {
+    id: 'hdr-photo-thumbnail',
+    title: 'HDR Photo Thumbnail',
+    sample: 'concorde',
+    description: 'Phone photos in Ultra HDR carry a gain map that makes highlights brighter on HDR displays. image.gainMap follows cover(), crops, compositing and color changes, and encodeJPEG() writes it back: on an HDR screen the left thumbnail glows, the right one (gain map removed) doesn\'t. Without an HDR screen both look the same.'
+  },
+  {
+    id: 'hdr-gain-map-explained',
+    title: 'HDR vs. SDR: Gain Map Wipe',
+    sample: 'concorde',
+    description: 'Applies the gain map by hand (2^gain on the linear light), then darkens both renditions by the brightest boost so an SDR screen can show what HDR displays do: a wipe between the HDR and SDR versions.'
+  },
+  {
     id: 'code-screenshot',
     title: 'Code Screenshot (SVG Text, Ligatures)',
     description: 'A syntax-highlighted code card like carbon.sh: the snippet is tokenized into colored SVG <tspan>s and rendered with renderSVG() in Fira Code. Ligatures (=>, !==, <=) are shaped across the spans, so they form even where the colors change.'

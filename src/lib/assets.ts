@@ -15,6 +15,7 @@ export const samples = [
   { id: 'cat', name: 'Cat', file: 'cat.jpg', description: 'Portrait-oriented close-up with fine fur detail, 800×1000 JPEG' },
   { id: 'dog', name: 'Dog', file: 'dog.jpg', description: 'Labrador outdoors with a soft background, 1200×800 JPEG' },
   { id: 'city-night', name: 'City at night', file: 'city-night.jpg', description: 'Dark scene with bright lights, 1200×800 JPEG' },
+  { id: 'concorde', name: 'Concorde (HDR)', file: 'concorde.jpg', description: 'Ultra HDR photo from a phone, with its gain map: brighter highlights on HDR displays, 1820×1820 JPEG' },
   { id: 'apple', name: 'Apple (transparent)', file: 'apple.png', description: 'Cut-out graphic with an alpha channel, 666×800 PNG' },
   { id: 'horse', name: 'Horse in motion (animated GIF)', file: 'horse.gif', description: 'Muybridge\'s 1878 photo sequence, 11 frames, 480×334 GIF: decode it with Animation.decode()' }
 ] as const satisfies readonly Sample[];
