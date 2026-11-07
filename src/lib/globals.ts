@@ -11,6 +11,10 @@ declare const GIF: typeof import('imagescript').GIF;
 declare const ImageType: typeof import('imagescript').ImageType;
 declare const TextLayout: typeof import('imagescript').TextLayout;
 declare const decode: typeof import('imagescript').decode;
+declare const Colors: typeof import('imagescript').Colors;
+declare const ResizeModes: typeof import('imagescript').ResizeModes;
+declare const SVGScaleModes: typeof import('imagescript').SVGScaleModes;
+declare const FrameDisposalModes: typeof import('imagescript').FrameDisposalModes;
 /** The input image's file: the selected sample or the uploaded image */
 declare const input: Uint8Array;
 /**

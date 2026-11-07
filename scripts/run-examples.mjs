@@ -31,7 +31,7 @@ const asset = (dir, list, kind) => async (id) => {
 const loadFont = asset('fonts', fonts, 'font');
 const loadSample = asset('samples', samples, 'sample');
 
-const { Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode } = imagescript;
+const { Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, Colors, ResizeModes, SVGScaleModes, FrameDisposalModes } = imagescript;
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 const quiet = { log() {}, info() {}, warn: console.warn, error: console.error };
 
@@ -47,8 +47,8 @@ for (const example of examples.filter((entry) => !ids.length || ids.includes(ent
   const started = performance.now();
   try {
     const run = new AsyncFunction('Image', 'Animation', 'AnimationEncoder', 'Frame', 'GIF', 'ImageType', 'TextLayout',
-      'decode', 'input', 'console', 'loadFont', 'loadSample', code);
-    let result = await run(Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode,
+      'decode', 'Colors', 'ResizeModes', 'SVGScaleModes', 'FrameDisposalModes', 'input', 'console', 'loadFont', 'loadSample', code);
+    let result = await run(Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, Colors, ResizeModes, SVGScaleModes, FrameDisposalModes,
       await loadSample(sample), quiet, loadFont, loadSample);
     if (result instanceof Animation) result = await result.encodeGIF();
     else if (result instanceof Image) result = await result.encode();

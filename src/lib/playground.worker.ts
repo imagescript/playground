@@ -1,10 +1,14 @@
 import {
   Animation,
   AnimationEncoder,
+  Colors,
   Frame,
+  FrameDisposalModes,
   GIF,
   Image,
   ImageType,
+  ResizeModes,
+  SVGScaleModes,
   TextLayout,
   decode
 } from 'imagescript';
@@ -289,13 +293,13 @@ scope.onmessage = async (event: MessageEvent<RunRequest>) => {
   try {
     const input = new Uint8Array(event.data.input);
     const execute = new AsyncFunction(
-      'Image', 'Animation', 'AnimationEncoder', 'Frame', 'GIF', 'ImageType', 'TextLayout', 'decode', 'input', 'console',
+      'Image', 'Animation', 'AnimationEncoder', 'Frame', 'GIF', 'ImageType', 'TextLayout', 'decode', 'Colors', 'ResizeModes', 'SVGScaleModes', 'FrameDisposalModes', 'input', 'console',
       'loadFont', 'loadSample',
       `${event.data.code}\n//# sourceURL=imagescript-playground-user-code.js`
     );
 
     const result = await execute(
-      Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, input, playgroundConsole,
+      Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, Colors, ResizeModes, SVGScaleModes, FrameDisposalModes, input, playgroundConsole,
       loadFont, loadSample
     );
 
