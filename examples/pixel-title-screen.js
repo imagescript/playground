@@ -30,4 +30,4 @@ await shadowed('QUEST', 0xf472b6ff, 48, 16);
 await shadowed('PRESS START', 0xffffffff, 112, 8);
 await shadowed('© 2026', 0xa5b4fcff, 128, 8);
 
-return screen.scale(5, Image.RESIZE_NEAREST_NEIGHBOR).encode();
+return screen.scale(5, ResizeModes.NEAREST_NEIGHBOR).encode();

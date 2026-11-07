@@ -41,7 +41,7 @@ const card = await Image.renderSVG(svg, { fonts: [fira] });
 
 // Backdrop with a soft shadow under the card
 const margin = 70;
-const backdrop = Image.gradient({ 0: 0x7f5af0ff, 1: 0x2cb1bcff });
+const backdrop = Colors.gradient({ 0: 0x7f5af0ff, 1: 0x2cb1bcff });
 const canvas = new Image(card.width + margin * 2, card.height + margin * 2);
 canvas.fill((x, y) => backdrop(Math.min(1, (x + y) / (canvas.width + canvas.height))));
 const shadow = new Image(canvas.width, canvas.height);

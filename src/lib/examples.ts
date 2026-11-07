@@ -144,7 +144,7 @@ export const exampleList = [
     id: 'avatar-with-gradient-ring',
     title: 'Avatar with Gradient Ring',
     sample: 'cat',
-    description: 'Crops any photo into a feathered circle and wraps it in an antialiased gradient ring, ready to use as a profile picture. Shows cover(), cropCircle(), drawCircle() with a color function and Image.gradient().'
+    description: 'Crops any photo into a feathered circle and wraps it in an antialiased gradient ring, ready to use as a profile picture. Shows cover(), cropCircle(), drawCircle() with a color function and Colors.gradient().'
   },
   {
     id: 'font-specimen',

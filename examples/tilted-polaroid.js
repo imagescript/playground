@@ -29,7 +29,7 @@ tile.rotate(-7);
 
 // Warm backdrop
 const margin = 60;
-const backdrop = Image.gradient({ 0: 0xffd9a0ff, 1: 0xf59bb4ff });
+const backdrop = Colors.gradient({ 0: 0xffd9a0ff, 1: 0xf59bb4ff });
 const w = tile.width + margin * 2;
 const h = tile.height + margin * 2;
 const canvas = new Image(w, h).fill((x, y) => backdrop(Math.min(1, (x + y) / (w + h))));

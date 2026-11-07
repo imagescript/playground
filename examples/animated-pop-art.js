@@ -22,8 +22,8 @@ for (let step = 0; step < steps; step++) {
   for (let p = 0; p < 4; p++) {
     // map the grey levels onto a two-color gradient whose hues turn a bit every frame
     const hue = (p / 4 + step / steps) % 1;
-    const duotone = Image.gradient({ 0: Image.hslToColor(hue, 0.85, 0.22), 1: Image.hslToColor((hue + 0.45) % 1, 0.95, 0.72) });
-    const lut = Array.from({ length: 256 }, (_, v) => Image.colorToRGBA(duotone(v / 255)));
+    const duotone = Colors.gradient({ 0: Colors.fromHSL(hue, 0.85, 0.22), 1: Colors.fromHSL((hue + 0.45) % 1, 0.95, 0.72) });
+    const lut = Array.from({ length: 256 }, (_, v) => Colors.toRGBA(duotone(v / 255)));
     const tinted = photo.clone();
     const pixels = tinted.bitmap;
     for (let i = 0; i < pixels.length; i += 4) {

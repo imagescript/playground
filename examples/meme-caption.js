@@ -1,6 +1,6 @@
 const [inter, emoji] = await Promise.all([loadFont('inter'), loadFont('noto-color-emoji')]);
 const img = await Image.decode(input);
-img.resize(1000, Image.RESIZE_AUTO); // the width, keeping the aspect ratio
+img.resize(1000, ResizeModes.AUTO); // the width, keeping the aspect ratio
 
 const top = 'When the build passes';
 const bottom = 'on the first try 🎉';

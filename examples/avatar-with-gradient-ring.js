@@ -8,7 +8,7 @@ const total = size + ring * 2;
 const avatar = img.cover(size, size).cropCircle({ feathering: 0.02 });
 
 // Draw a gradient disc that is slightly larger than the avatar
-const accent = Image.gradient({ 0: 0xff7a18ff, 0.5: 0xff2d75ff, 1: 0x7c3aedff });
+const accent = Colors.gradient({ 0: 0xff7a18ff, 0.5: 0xff2d75ff, 1: 0x7c3aedff });
 const canvas = new Image(total, total);
 canvas.drawCircle(total / 2, total / 2, total / 2, (x, y) =>
   accent(Math.min(1, (x + y) / (2 * total)))

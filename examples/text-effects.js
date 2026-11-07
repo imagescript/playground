@@ -18,11 +18,11 @@ centered(core, 40);
 
 // 2. Gradient fill: keep the text's coverage (alpha), replace its color by a gradient across it
 const gradientText = await Image.renderText(inter, 110, 'Gradient fill', bold);
-const gradient = Image.gradient({ 0: 0x22d3eeff, 0.5: 0xa78bfaff, 1: 0xfb923cff });
+const gradient = Colors.gradient({ 0: 0x22d3eeff, 0.5: 0xa78bfaff, 1: 0xfb923cff });
 const pixels = gradientText.bitmap;
 for (let y = 0; y < gradientText.height; y++) {
   for (let x = 0; x < gradientText.width; x++) {
-    const [r, g, b] = Image.colorToRGBA(gradient(x / (gradientText.width - 1)));
+    const [r, g, b] = Colors.toRGBA(gradient(x / (gradientText.width - 1)));
     const i = (y * gradientText.width + x) * 4;
     pixels[i] = r; pixels[i + 1] = g; pixels[i + 2] = b;
   }

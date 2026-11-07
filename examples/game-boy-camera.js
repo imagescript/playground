@@ -4,7 +4,7 @@ const img = await Image.decode(input);
 img.cover(160, 144).greyscale().contrast(1.25).gamma(1.1);
 
 // Darkest -> lightest
-const palette = [0x0f380fff, 0x306230ff, 0x8bac0fff, 0x9bbc0fff].map((c) => Image.colorToRGBA(c));
+const palette = [0x0f380fff, 0x306230ff, 0x8bac0fff, 0x9bbc0fff].map((c) => Colors.toRGBA(c));
 
 // 4x4 Bayer matrix for ordered dithering
 const bayer = [
@@ -30,6 +30,6 @@ for (let y = 0; y < h; y++) {
   }
 }
 
-img.scale(5, { mode: Image.RESIZE_NEAREST_NEIGHBOR });
+img.scale(5, { mode: ResizeModes.NEAREST_NEIGHBOR });
 
 return img.encode();

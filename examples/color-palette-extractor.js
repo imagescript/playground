@@ -1,13 +1,13 @@
 const img = await Image.decode(input);
-img.resize(960, Image.RESIZE_AUTO);
+img.resize(960, ResizeModes.AUTO);
 
 const dominant = img.dominantColor();
 const average = img.averageColor();
 
 // Derive harmonious colors by rotating the hue (hue is 0..1)
-const [r, g, b] = Image.colorToRGB(dominant);
-const [h, s, l] = Image.rgbaToHSLA(r, g, b, 255);
-const rotate = (turns) => Image.hslToColor((((h + turns) % 1) + 1) % 1, s, l);
+const [r, g, b] = Colors.toRGB(dominant);
+const [h, s, l] = Colors.toHSLA(Colors.fromRGBA(r, g, b, 255));
+const rotate = (turns) => Colors.fromHSL((((h + turns) % 1) + 1) % 1, s, l);
 
 const swatches = [dominant, average, rotate(1 / 12), rotate(-1 / 12), rotate(0.5)];
 

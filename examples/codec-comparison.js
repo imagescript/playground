@@ -31,7 +31,7 @@ for (const [i, { name, encode }] of codecs.entries()) {
 
   const x = gap + (i % columns) * (tile + gap);
   const y = gap + Math.floor(i / columns) * (tile + labelHeight);
-  sheet.composite(decoded.scale(zoom, Image.RESIZE_NEAREST_NEIGHBOR), x, y);
+  sheet.composite(decoded.scale(zoom, ResizeModes.NEAREST_NEIGHBOR), x, y);
   sheet.composite(await text(name, 26, 0xffffffff, 700), x, y + tile + 10);
   sheet.composite(await text(`${(bytes.length / 1024).toFixed(1)} KB · ${milliseconds.toFixed(0)} ms`, 20, 0x9ca3afff), x + 150, y + tile + 14);
 }
