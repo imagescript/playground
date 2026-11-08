@@ -1,4 +1,10 @@
 const img = await Image.decode(input);
+
+// A rotation by degrees (clockwise is positive) as the matrix transform() takes
+const rotation = (degrees) => {
+  const a = (degrees * Math.PI) / 180;
+  return [Math.cos(a), Math.sin(a), -Math.sin(a), Math.cos(a), 0, 0];
+};
 const caveat = await loadFont('caveat');
 const caption = 'Summer at the lake, 2026';
 
@@ -18,14 +24,8 @@ const label = await Image.renderText(caption, { font: caveat, size: 54, color: 0
 paper.composite(label, { x: Math.round((paper.width - label.width) / 2), y: photoSize + border + Math.round((bottom - label.height) / 2) });
 paper.roundCorners({ radius: 6 });
 
-// Paper + shadow on a transparent tile, then rotate (tile grows to fit)
-const pad = 100;
-const tile = new Image(paper.width + pad * 2, paper.height + pad * 2);
-const shadow = new Image(tile.width, tile.height);
-shadow.composite(new Image(paper.width, paper.height).fill(0x00000090), { x: pad + 8, y: pad + 18 });
-shadow.blur(16);
-tile.composite(shadow).composite(paper, { x: pad, y: pad });
-tile.rotate(-7);
+// Paper with its shadow, then rotate (the image grows to fit)
+const tile = paper.dropShadow({ x: 8, y: 18, blur: 16, color: 0x00000090 }).transform(rotation(7));
 
 // Warm backdrop
 const margin = 60;
