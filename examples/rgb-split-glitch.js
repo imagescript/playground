@@ -3,9 +3,9 @@ const { width: w, height: h } = img;
 const shift = Math.max(3, Math.round(w / 120));
 
 // Isolate each channel by zeroing the other two
-const red = img.clone().green(0, true).blue(0, true);
-const green = img.clone().red(0, true).blue(0, true);
-const blue = img.clone().red(0, true).green(0, true);
+const red = img.clone().green(0).blue(0);
+const green = img.clone().red(0).blue(0);
+const blue = img.clone().red(0).green(0);
 
 // Re-add them with offsets on a black canvas
 const base = new Image(w, h).fill(0x000000ff);
