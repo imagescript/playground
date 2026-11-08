@@ -39,5 +39,5 @@ for (let i = 0; i < frameCount; i++) {
   frames.push(Frame.from(frame, { duration: 40 }));
 }
 
-console.log(`Highlights up to ${peak.toFixed(1)}× as bright; bottom right: the gain map (white = the most boost)`);
+console.log(`Highlights up to ${peak.toFixed(1)}× as bright`);
 return await new Animation(frames).encodeWebP({quality: 80});
