@@ -6,8 +6,7 @@ const cols = 3;
 img.cover(tile, tile);
 
 // The layer we blend on top of the photo
-const colors = Colors.gradient({ 0: 0xff4d8dff, 0.5: 0xffd166ff, 1: 0x06d6a0ff });
-const layer = new Image(tile, tile).fill((x, y) => colors(Math.min(1, (x + y) / (2 * tile))));
+const layer = Image.linearGradient(tile, tile, { stops: [0xff4d8dff, 0xffd166ff, 0x06d6a0ff], angle: 135 });
 
 // (`@type {const}` keeps the names as BlendMode literals instead of strings)
 const modes = /** @type {const} */ (['multiply', 'screen', 'overlay', 'soft-light', 'difference', 'color-dodge']);
