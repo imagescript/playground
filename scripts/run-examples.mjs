@@ -51,7 +51,7 @@ for (const example of examples.filter((entry) => !ids.length || ids.includes(ent
     let result = await run(Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, Colors, ResizeModes, SVGScaleModes, FrameDisposalModes,
       await loadSample(sample), quiet, loadFont, loadSample);
     if (result instanceof Animation) result = await result.encodeGIF();
-    else if (result instanceof Image) result = await result.encode();
+    else if (result instanceof Image) result = await result.encodePNG();
     let description;
     if (result instanceof Uint8Array) {
       const type = ImageType.getType(result);

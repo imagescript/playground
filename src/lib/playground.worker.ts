@@ -310,7 +310,7 @@ scope.onmessage = async (event: MessageEvent<RunRequest>) => {
     }
 
     if (result instanceof Image) {
-      const bytes = await result.encode();
+      const bytes = await result.encodePNG();
       const buffer = toArrayBuffer(bytes);
       scope.postMessage({
         type: 'result', runId, kind: 'image', bytes: buffer,
