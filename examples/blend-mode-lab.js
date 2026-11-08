@@ -15,10 +15,10 @@ const rows = Math.ceil(modes.length / cols);
 const sheet = new Image(cols * tile + (cols + 1) * gap, rows * tile + (rows + 1) * gap).fill(0x111111ff);
 
 modes.forEach((mode, i) => {
-  const cell = img.clone().composite(layer, 0, 0, { mode });
+  const cell = img.clone().composite(layer, { mode });
   const x = gap + (i % cols) * (tile + gap);
   const y = gap + Math.floor(i / cols) * (tile + gap);
-  sheet.composite(cell, x, y);
+  sheet.composite(cell, { x, y });
 });
 
 return sheet.encodeJPEG({ quality: 90 });

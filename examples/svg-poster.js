@@ -58,4 +58,4 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.
 </svg>`;
 
 const poster = await Image.renderSVG(svg, { fonts: [inter] });
-return poster.encodeJPEG(90);
+return poster.encodeJPEG({ quality: 90 });

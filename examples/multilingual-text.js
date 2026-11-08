@@ -13,16 +13,16 @@ const lines = [
 const width = 1200;
 const rowHeight = 104;
 const canvas = new Image(width, 90 + lines.length * rowHeight).fill(0x10172aff);
-const title = await Image.renderText(fontList, 34, 'One font list, many scripts', { color: 0xf8fafcff, variations: { weight: 700 } });
-canvas.composite(title, 40, 28);
+const title = await Image.renderText('One font list, many scripts', { font: fontList, size: 34, color: 0xf8fafcff, variations: { weight: 700 } });
+canvas.composite(title, { x: 40, y: 28 });
 
 for (const [i, [language, text]] of lines.entries()) {
   const y = 90 + i * rowHeight;
   canvas.drawBox(30, y, width - 60, rowHeight - 14, i % 2 ? 0x1e293bff : 0x172033ff);
-  const label = await Image.renderText(fontList, 20, language.toUpperCase(), { color: 0x94a3b8ff, variations: { weight: 600 } });
-  canvas.composite(label, 56, y + Math.round((rowHeight - 14 - label.height) / 2));
-  const line = await Image.renderText(fontList, 46, text, { color: 0xffffffff });
-  canvas.composite(line, 290, y + Math.round((rowHeight - 14 - line.height) / 2));
+  const label = await Image.renderText(language.toUpperCase(), { font: fontList, size: 20, color: 0x94a3b8ff, variations: { weight: 600 } });
+  canvas.composite(label, { x: 56, y: y + Math.round((rowHeight - 14 - label.height) / 2) });
+  const line = await Image.renderText(text, { font: fontList, size: 46, color: 0xffffffff });
+  canvas.composite(line, { x: 290, y: y + Math.round((rowHeight - 14 - line.height) / 2) });
 }
 
-return canvas.encode();
+return canvas.encodePNG();

@@ -17,22 +17,22 @@ const size = 40;
 const columns = [60, 360, 860];
 const rowHeight = 112;
 const canvas = new Image(1380, 110 + rows.length * rowHeight).fill(0xffffffff);
-const label = (text, color, weight = 500, fontSize = 22) => Image.renderText(inter, fontSize, text, { color, variations: { weight } });
+const label = (text, color, weight = 500, fontSize = 22) => Image.renderText(text, { font: inter, size: fontSize, color, variations: { weight } });
 
-canvas.composite(await label('FEATURE', 0x9ca3afff, 700, 18), columns[0], 40);
-canvas.composite(await label('DEFAULT', 0x9ca3afff, 700, 18), columns[1], 40);
-canvas.composite(await label('WITH THE FEATURE', 0x9ca3afff, 700, 18), columns[2], 40);
+canvas.composite(await label('FEATURE', 0x9ca3afff, 700, 18), { x: columns[0], y: 40 });
+canvas.composite(await label('DEFAULT', 0x9ca3afff, 700, 18), { x: columns[1], y: 40 });
+canvas.composite(await label('WITH THE FEATURE', 0x9ca3afff, 700, 18), { x: columns[2], y: 40 });
 
 for (const [i, { font, tag, name, text, value }] of rows.entries()) {
   const features = { [tag]: value };
   const y = 90 + i * rowHeight;
   if (i % 2 === 0) canvas.drawBox(0, y - 8, canvas.width, rowHeight, 0xf5f7fbff);
-  canvas.composite(await label(`${tag}`, 0x111827ff, 700, 26), columns[0], y + 14);
-  canvas.composite(await label(name, 0x6b7280ff, 400, 18), columns[0], y + 52);
+  canvas.composite(await label(`${tag}`, 0x111827ff, 700, 26), { x: columns[0], y: y + 14 });
+  canvas.composite(await label(name, 0x6b7280ff, 400, 18), { x: columns[0], y: y + 52 });
   // multi-line text: lines are aligned to the right, so the tabular figures line up
   const layout = new TextLayout({ horizontalAlign: 'right' });
-  canvas.composite(await Image.renderText(font, size, text, { color: 0x374151ff, layout }), columns[1], y + (text.includes('\n') ? -6 : 12));
-  canvas.composite(await Image.renderText(font, size, text, { color: 0x2563ebff, layout, features }), columns[2], y + (text.includes('\n') ? -6 : 12));
+  canvas.composite(await Image.renderText(text, { font, size, color: 0x374151ff, layout }), { x: columns[1], y: y + (text.includes('\n') ? -6 : 12) });
+  canvas.composite(await Image.renderText(text, { font, size, color: 0x2563ebff, layout, features }), { x: columns[2], y: y + (text.includes('\n') ? -6 : 12) });
 }
 
-return canvas.encode();
+return canvas.encodePNG();

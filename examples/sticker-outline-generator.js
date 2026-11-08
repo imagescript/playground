@@ -10,7 +10,7 @@ const silhouette = img.clone().red(1, true).green(1, true).blue(1, true);
 
 // 2. Spread the silhouette by blurring it and boosting the alpha channel
 const halo = new Image(w, h);
-halo.composite(silhouette, pad, pad);
+halo.composite(silhouette, { x: pad, y: pad });
 halo.blur(outline / 2);
 const px = halo.bitmap;
 for (let i = 3; i < px.length; i += 4) {
@@ -23,8 +23,8 @@ shadow.blur(6);
 
 // 4. Stack: shadow, outline, subject
 const sticker = new Image(w, h);
-sticker.composite(shadow, 4, 8);
-sticker.composite(halo, 0, 0);
-sticker.composite(img, pad, pad);
+sticker.composite(shadow, { x: 4, y: 8 });
+sticker.composite(halo);
+sticker.composite(img, { x: pad, y: pad });
 
-return sticker.encode();
+return sticker.encodePNG();

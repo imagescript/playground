@@ -7,15 +7,15 @@ const left = 150;
 const top = 70;
 
 const canvas = new Image(left + weights.length * cell.width + 30, top + widths.length * cell.height + 3 * 110 + 40).fill(0xfffdf8ff);
-const label = (text, color = 0x9ca3afff) => Image.renderText(inter, 18, text, { color, variations: { weight: 600 } });
-const word = (size, variations, color = 0x111827ff) => Image.renderText(flex, size, 'Flex', { color, variations });
+const label = (text, color = 0x9ca3afff) => Image.renderText(text, { font: inter, size: 18, color, variations: { weight: 600 } });
+const word = (size, variations, color = 0x111827ff) => Image.renderText('Flex', { font: flex, size, color, variations });
 
-for (const [column, weight] of weights.entries()) canvas.composite(await label(`wght ${weight}`), left + column * cell.width, 30);
+for (const [column, weight] of weights.entries()) canvas.composite(await label(`wght ${weight}`), { x: left + column * cell.width, y: 30 });
 for (const [row, width] of widths.entries()) {
   const y = top + row * cell.height;
-  canvas.composite(await label(`wdth ${width}`), 30, y + 34);
+  canvas.composite(await label(`wdth ${width}`), { x: 30, y: y + 34 });
   for (const [column, weight] of weights.entries()) {
-    canvas.composite(await word(64, { weight, width }), left + column * cell.width, y);
+    canvas.composite(await word(64, { weight, width }), { x: left + column * cell.width, y });
   }
 }
 
@@ -27,12 +27,12 @@ const rows = [
 ];
 let y = top + widths.length * cell.height + 30;
 for (const { name, values, variations } of rows) {
-  canvas.composite(await label(name, 0x6b7280ff), 30, y + 34);
+  canvas.composite(await label(name, 0x6b7280ff), { x: 30, y: y + 34 });
   for (const [i, value] of values.entries()) {
-    canvas.composite(await word(64, variations(value), 0x1d4ed8ff), left + i * 2 * cell.width, y);
-    canvas.composite(await label(String(value)), left + i * 2 * cell.width + 150, y + 34);
+    canvas.composite(await word(64, variations(value), 0x1d4ed8ff), { x: left + i * 2 * cell.width, y });
+    canvas.composite(await label(String(value)), { x: left + i * 2 * cell.width + 150, y: y + 34 });
   }
   y += 110;
 }
 
-return canvas.encode();
+return canvas.encodePNG();

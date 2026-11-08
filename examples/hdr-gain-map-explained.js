@@ -24,7 +24,7 @@ for (let i = 0; i < photo.bitmap.length; i += 4) {
   }
 }
 
-const caption = (text) => Image.renderText(inter, 22, text, { color: 0xffffffff, strokeWidth: 3, strokeColor: 0x000000c0, variations: { weight: 700 } });
+const caption = (text) => Image.renderText(text, { font: inter, size: 22, color: 0xffffffff, strokeWidth: 3, strokeColor: 0x000000c0, variations: { weight: 700 } });
 const [left, right] = await Promise.all([caption('HDR'), caption('SDR')]);
 
 // a wipe between the two, back and forth
@@ -33,9 +33,9 @@ const frameCount = 40;
 for (let i = 0; i < frameCount; i++) {
   const t = 0.5 - 0.5 * Math.cos((i / frameCount) * 2 * Math.PI);
   const split = Math.round(40 + t * (photo.width - 80));
-  const frame = sdr.clone().composite(hdr.region(0, 0, split, photo.height), 0, 0);
+  const frame = sdr.clone().composite(hdr.region(0, 0, split, photo.height));
   frame.drawBox(split - 1, 0, 2, photo.height, 0xffffffff);
-  frame.composite(left, 12, 12).composite(right, photo.width - right.width - 12, 12);
+  frame.composite(left, { x: 12, y: 12 }).composite(right, { x: photo.width - right.width - 12, y: 12 });
   frames.push(Frame.from(frame, { duration: 40 }));
 }
 

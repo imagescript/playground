@@ -4,7 +4,7 @@ const source = `// resize every image in a folder to a thumbnail
 const thumbnails = await Promise.all(files.map(async (file) => {
   const image = await Image.decode(await read(file));
   if (image.width <= 640 && image.height !== 0) return image;
-  return image.cover(640, 360).sharpen(0.4);
+  return image.cover(640, 360).sharpen({ amount: 0.4 });
 }));`;
 
 const colors = { comment: '#6a737d', keyword: '#ff7b72', string: '#a5d6ff', number: '#79c0ff', call: '#d2a8ff', operator: '#ff7b72', plain: '#e6edf3' };
@@ -45,7 +45,7 @@ const backdrop = Colors.gradient({ 0: 0x7f5af0ff, 1: 0x2cb1bcff });
 const canvas = new Image(card.width + margin * 2, card.height + margin * 2);
 canvas.fill((x, y) => backdrop(Math.min(1, (x + y) / (canvas.width + canvas.height))));
 const shadow = new Image(canvas.width, canvas.height);
-shadow.composite(new Image(card.width, card.height).fill(0x00000080).roundCorners(14), margin, margin + 20);
-canvas.composite(shadow.blur(24), 0, 0).composite(card, margin, margin);
+shadow.composite(new Image(card.width, card.height).fill(0x00000080).roundCorners({ radius: 14 }), { x: margin, y: margin + 20 });
+canvas.composite(shadow.blur(24)).composite(card, { x: margin, y: margin });
 
-return canvas.encode();
+return canvas.encodePNG();

@@ -32,4 +32,4 @@ for (let y = 0; y < h; y++) {
 
 img.scale(5, { mode: ResizeModes.NEAREST_NEIGHBOR });
 
-return img.encode();
+return img.encodePNG();

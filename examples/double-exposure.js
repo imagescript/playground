@@ -14,8 +14,8 @@ for (let y = 0; y < height; y++) {
   }
 }
 
-portrait.composite(overlay, 0, 0, { mode: 'screen' });
+portrait.composite(overlay, { mode: 'screen' });
 // a cool tint over the whole picture
-portrait.composite(new Image(width, height).fill(0x1d4ed8ff), 0, 0, { mode: 'soft-light' });
+portrait.composite(new Image(width, height).fill(0x1d4ed8ff), { mode: 'soft-light' });
 
-return portrait.encodeJPEG(90);
+return portrait.encodeJPEG({ quality: 90 });

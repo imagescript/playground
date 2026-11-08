@@ -14,15 +14,15 @@ for (let i = 0; i < pixels.length; i += 4) {
 }
 
 // darken the band behind the title
-screen.composite(new Image(width, 46).fill(0x000000a0), 0, 22);
+screen.composite(new Image(width, 46).fill(0x000000a0), { x: 0, y: 22 });
 
 // hinting off: the outlines are already on the pixel grid
-const text = (value, color, size = 16) => Image.renderText(pixelFont, size, value, { color, hinting: false });
+const text = (value, color, size = 16) => Image.renderText(value, { font: pixelFont, size, color, hinting: false });
 const shadowed = async (value, color, y, size) => {
   const shadow = await text(value, 0x1e1b4bff, size);
   const glyphs = await text(value, color, size);
   const x = Math.round((width - glyphs.width) / 2);
-  screen.composite(shadow, x + 2, y + 2).composite(glyphs, x, y);
+  screen.composite(shadow, { x: x + 2, y: y + 2 }).composite(glyphs, { x, y });
 };
 
 await shadowed('IMAGESCRIPT', 0xfde047ff, 28, 16);
@@ -30,4 +30,4 @@ await shadowed('QUEST', 0xf472b6ff, 48, 16);
 await shadowed('PRESS START', 0xffffffff, 112, 8);
 await shadowed('© 2026', 0xa5b4fcff, 128, 8);
 
-return screen.scale(5, ResizeModes.NEAREST_NEIGHBOR).encode();
+return screen.scale(5, { mode: ResizeModes.NEAREST_NEIGHBOR }).encodePNG();

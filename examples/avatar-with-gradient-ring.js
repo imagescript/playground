@@ -15,6 +15,6 @@ canvas.drawCircle(total / 2, total / 2, total / 2, (x, y) =>
 );
 
 // The avatar sits on top, so only the outer ring stays visible
-canvas.composite(avatar, ring, ring);
+canvas.composite(avatar, { x: ring, y: ring });
 
-return canvas.encode();
+return canvas.encodePNG();

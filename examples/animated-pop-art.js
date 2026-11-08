@@ -30,7 +30,7 @@ for (let step = 0; step < steps; step++) {
       const [r, g, b] = lut[pixels[i]];
       pixels[i] = r; pixels[i + 1] = g; pixels[i + 2] = b;
     }
-    canvas.composite(tinted, gap + (p % 2) * (panel.width + gap), gap + Math.floor(p / 2) * (panel.height + gap));
+    canvas.composite(tinted, { x: gap + (p % 2) * (panel.width + gap), y: gap + Math.floor(p / 2) * (panel.height + gap) });
   }
 
   // each frame is compressed as it's added: only the encoded frames stay in memory

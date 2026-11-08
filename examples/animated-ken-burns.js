@@ -7,7 +7,8 @@ const frameCount = 36;
 const focus = { x: 0.62, y: 0.42 }; // where the zoom ends up, relative to the image
 const ease = (t) => t * t * (3 - 2 * t);
 
-const caption = await Image.renderText(inter, 34, 'Ken Burns effect', {
+const caption = await Image.renderText('Ken Burns effect', {
+  font: inter, size: 34,
   color: 0xffffffff, strokeWidth: 1, strokeColor: 0x00000060, variations: { weight: 700 }
 });
 
@@ -23,7 +24,7 @@ for (let i = 0; i < frameCount; i++) {
 
   // the caption fades in during the second half
   const alpha = Math.max(0, Math.min(1, (i / (frameCount - 1) - 0.45) / 0.35));
-  if (alpha > 0) frame.composite(caption.clone().opacity(alpha), 24, height - caption.height - 20);
+  if (alpha > 0) frame.composite(caption.clone().opacity(alpha), { x: 24, y: height - caption.height - 20 });
 
   frames.push(Frame.from(frame, { duration: i === frameCount - 1 ? 1500 : 70 }));
 }

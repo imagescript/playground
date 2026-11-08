@@ -20,12 +20,13 @@ const canvas = new Image(width, 40 + specimens.length * rowHeight).fill(0xfafaf9
 for (const [i, { id, name, text, size, variations }] of specimens.entries()) {
   const y = 20 + i * rowHeight;
   if (i) canvas.drawBox(40, y - 1, width - 80, 1, 0xe7e5e4ff);
-  const title = await Image.renderText(inter, 18, `${name}  ·  loadFont('${id}')`, { color: 0x78716cff, variations: { weight: 600 } });
-  canvas.composite(title, 40, y + 14);
-  const sample = await Image.renderText(await loadFont(id), size, text, {
+  const title = await Image.renderText(`${name}  ·  loadFont('${id}')`, { font: inter, size: 18, color: 0x78716cff, variations: { weight: 600 } });
+  canvas.composite(title, { x: 40, y: y + 14 });
+  const sample = await Image.renderText(text, {
+    font: await loadFont(id), size,
     color: 0x1c1917ff, variations, layout: new TextLayout({ maxWidth: width - 80, maxHeight: 70 })
   });
-  canvas.composite(sample, 40, y + 44);
+  canvas.composite(sample, { x: 40, y: y + 44 });
 }
 
-return canvas.encode();
+return canvas.encodePNG();

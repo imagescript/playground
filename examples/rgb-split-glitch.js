@@ -9,9 +9,9 @@ const blue = img.clone().red(0, true).green(0, true);
 
 // Re-add them with offsets on a black canvas
 const base = new Image(w, h).fill(0x000000ff);
-base.composite(red, 0, 0, { mode: 'add' });
-base.composite(green, shift, 0, { mode: 'add' });
-base.composite(blue, shift * 2, 0, { mode: 'add' });
+base.composite(red, { mode: 'add' });
+base.composite(green, { x: shift, y: 0, mode: 'add' });
+base.composite(blue, { x: shift * 2, y: 0, mode: 'add' });
 
 // Crop away the edge where not all three channels overlap
 const out = base.crop(shift * 2, 0, w - shift * 2, h);
@@ -24,7 +24,7 @@ for (let n = 0; n < 7; n++) {
   const sliceHeight = 6 + Math.floor(rand() * 30);
   const dx = shift + Math.floor(rand() * shift * 5);
   const slice = out.region(0, y, out.width, sliceHeight);
-  out.composite(slice, dx, y);
+  out.composite(slice, { x: dx, y });
 }
 
 // CRT scanlines
