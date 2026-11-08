@@ -39,13 +39,10 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${
 </svg>`;
 const card = await Image.renderSVG(svg, { fonts: [fira] });
 
-// Backdrop with a soft shadow under the card
+// The card on a gradient backdrop, with a soft shadow under it (the margin leaves room for the shadow)
 const margin = 70;
-const backdrop = Colors.gradient({ 0: 0x7f5af0ff, 1: 0x2cb1bcff });
-const canvas = new Image(card.width + margin * 2, card.height + margin * 2);
-canvas.fill((x, y) => backdrop(Math.min(1, (x + y) / (canvas.width + canvas.height))));
-const shadow = new Image(canvas.width, canvas.height);
-shadow.composite(new Image(card.width, card.height).fill(0x00000080).roundCorners({ radius: 14 }), { x: margin, y: margin + 20 });
-canvas.composite(shadow.blur(24)).composite(card, { x: margin, y: margin });
+const canvas = Image.linearGradient(card.width + margin * 2, card.height + margin * 2, { stops: [0x7f5af0ff, 0x2cb1bcff], angle: 135 });
+const tile = new Image(canvas.width, canvas.height).composite(card, { x: margin, y: margin });
+canvas.composite(tile.dropShadow({ y: 20, blur: 24, color: 0x00000080, expand: false }));
 
 return canvas.encodePNG();
