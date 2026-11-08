@@ -1,11 +1,5 @@
 const inter = await loadFont('inter');
 
-// The input goes into the SVG as a data: URI
-const type = ImageType.getType(input) ?? 'png';
-let binary = '';
-for (let i = 0; i < input.length; i += 0x8000) binary += String.fromCharCode(...input.subarray(i, i + 0x8000));
-const photo = `data:image/${type};base64,${btoa(binary)}`;
-
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1080" height="1350" viewBox="0 0 1080 1350">
   <style>
     .title { font: 900 128px Inter; fill: url(#sunset); letter-spacing: -4px; }
@@ -46,7 +40,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.
   <circle cx="540" cy="520" r="330" fill="url(#sunset)" opacity="0.85" filter="url(#liquid)"/>
 
   <g filter="url(#shadow)">
-    <image href="${photo}" x="240" y="220" width="600" height="600" preserveAspectRatio="xMidYMid slice" clip-path="url(#circle)"/>
+    <image href="photo" x="240" y="220" width="600" height="600" preserveAspectRatio="xMidYMid slice" clip-path="url(#circle)"/>
   </g>
   <circle cx="540" cy="520" r="300" fill="none" stroke="#fff" stroke-opacity="0.8" stroke-width="6"/>
 
@@ -57,5 +51,6 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.
   <rect width="1080" height="1350" filter="url(#grain)"/>
 </svg>`;
 
-const poster = await Image.renderSVG(svg, { fonts: [inter] });
+// The <image href="photo"> shows the input: images are given by their href, no data: URI needed
+const poster = await Image.renderSVG(svg, { fonts: [inter], images: { photo: input } });
 return poster.encodeJPEG({ quality: 90 });
