@@ -29,10 +29,7 @@ const tile = paper.dropShadow({ x: 8, y: 18, blur: 16, color: 0x00000090 }).tran
 
 // Warm backdrop
 const margin = 60;
-const backdrop = Colors.gradient({ 0: 0xffd9a0ff, 1: 0xf59bb4ff });
-const w = tile.width + margin * 2;
-const h = tile.height + margin * 2;
-const canvas = new Image(w, h).fill((x, y) => backdrop(Math.min(1, (x + y) / (w + h))));
+const canvas = Image.linearGradient(tile.width + margin * 2, tile.height + margin * 2, { stops: [0xffd9a0ff, 0xf59bb4ff], angle: 135 });
 canvas.composite(tile, { x: margin, y: margin });
 
 return canvas.encodePNG();
