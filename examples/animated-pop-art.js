@@ -22,14 +22,15 @@ for (let step = 0; step < steps; step++) {
   for (let p = 0; p < 4; p++) {
     // map the grey levels onto a two-color gradient whose hues turn a bit every frame
     const hue = (p / 4 + step / steps) % 1;
-    const duotone = Colors.gradient({ 0: Colors.fromHSL(hue, 0.85, 0.22), 1: Colors.fromHSL((hue + 0.45) % 1, 0.95, 0.72) });
-    const lut = Array.from({ length: 256 }, (_, v) => Colors.toRGBA(duotone(v / 255)));
-    const tinted = photo.clone();
-    const pixels = tinted.bitmap;
-    for (let i = 0; i < pixels.length; i += 4) {
-      const [r, g, b] = lut[pixels[i]];
-      pixels[i] = r; pixels[i + 1] = g; pixels[i + 2] = b;
-    }
+    const [r0, g0, b0] = Colors.toRGB(Colors.fromHSL(hue, 0.85, 0.22));
+    const [r1, g1, b1] = Colors.toRGB(Colors.fromHSL((hue + 0.45) % 1, 0.95, 0.72));
+    // the red channel (all three are equal in a greyscale photo) times the span between the colors, plus the dark one
+    const tinted = photo.clone().colorMatrix([
+      (r1 - r0) / 255, 0, 0, 0, r0 / 255,
+      (g1 - g0) / 255, 0, 0, 0, g0 / 255,
+      (b1 - b0) / 255, 0, 0, 0, b0 / 255,
+      0, 0, 0, 1, 0,
+    ]);
     canvas.composite(tinted, { x: gap + (p % 2) * (panel.width + gap), y: gap + Math.floor(p / 2) * (panel.height + gap) });
   }
 
