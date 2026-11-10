@@ -1,17 +1,4 @@
-import {
-  Animation,
-  AnimationEncoder,
-  Colors,
-  Frame,
-  FrameDisposalModes,
-  GIF,
-  Image,
-  ImageType,
-  ResizeModes,
-  SVGScaleModes,
-  TextLayout,
-  decode
-} from 'imagescript';
+import * as ImageScript from 'imagescript';
 import { fonts, samples } from './assets';
 
 type RunRequest = {
@@ -31,6 +18,8 @@ type WorkerResponse =
 
 const scope = self as DedicatedWorkerGlobalScope;
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor as new (...args: string[]) => (...args: unknown[]) => Promise<unknown>;
+const imageScriptExports = Object.entries(ImageScript);
+const { Animation, Image } = ImageScript;
 let activeRunId = 0;
 
 // Fonts and sample images are fetched once per worker; every call gets its own copy, so code may modify it
@@ -293,13 +282,15 @@ scope.onmessage = async (event: MessageEvent<RunRequest>) => {
   try {
     const input = new Uint8Array(event.data.input);
     const execute = new AsyncFunction(
-      'Image', 'Animation', 'AnimationEncoder', 'Frame', 'GIF', 'ImageType', 'TextLayout', 'decode', 'Colors', 'ResizeModes', 'SVGScaleModes', 'FrameDisposalModes', 'input', 'console',
+      ...imageScriptExports.map(([name]) => name),
+      'input', 'console',
       'loadFont', 'loadSample',
       `${event.data.code}\n//# sourceURL=imagescript-playground-user-code.js`
     );
 
     const result = await execute(
-      Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, Colors, ResizeModes, SVGScaleModes, FrameDisposalModes, input, playgroundConsole,
+      ...imageScriptExports.map(([, value]) => value),
+      input, playgroundConsole,
       loadFont, loadSample
     );
 

@@ -31,7 +31,8 @@ const asset = (dir, list, kind) => async (id) => {
 const loadFont = asset('fonts', fonts, 'font');
 const loadSample = asset('samples', samples, 'sample');
 
-const { Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, Colors, ResizeModes, SVGScaleModes, FrameDisposalModes } = imagescript;
+const imageScriptExports = Object.entries(imagescript);
+const { Image, Animation, ImageType } = imagescript;
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
 const quiet = { log() {}, info() {}, warn: console.warn, error: console.error };
 
@@ -46,16 +47,16 @@ for (const example of examples.filter((entry) => !ids.length || ids.includes(ent
   const code = await readFile(join(root, 'examples', `${example.id}.js`), 'utf8');
   const started = performance.now();
   try {
-    const run = new AsyncFunction('Image', 'Animation', 'AnimationEncoder', 'Frame', 'GIF', 'ImageType', 'TextLayout',
-      'decode', 'Colors', 'ResizeModes', 'SVGScaleModes', 'FrameDisposalModes', 'input', 'console', 'loadFont', 'loadSample', code);
-    let result = await run(Image, Animation, AnimationEncoder, Frame, GIF, ImageType, TextLayout, decode, Colors, ResizeModes, SVGScaleModes, FrameDisposalModes,
+    const run = new AsyncFunction(...imageScriptExports.map(([name]) => name),
+      'input', 'console', 'loadFont', 'loadSample', code);
+    let result = await run(...imageScriptExports.map(([, value]) => value),
       await loadSample(sample), quiet, loadFont, loadSample);
     if (result instanceof Animation) result = await result.encodeGIF();
     else if (result instanceof Image) result = await result.encodePNG();
     let description;
     if (result instanceof Uint8Array) {
       const type = ImageType.getType(result);
-      const image = type && await decode(result, true);
+      const image = type && await imagescript.decode(result, true);
       description = `${result.length} bytes ${type ?? 'binary'}${image ? ` ${image.width}x${image.height}` : ''}`;
       if (out) await writeFile(join(out, `${example.id}.${type ?? 'bin'}`), result);
     } else if (result !== undefined) description = JSON.stringify(result).slice(0, 80);

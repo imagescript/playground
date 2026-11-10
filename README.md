@@ -33,8 +33,8 @@ The editor is Monaco with JavaScript IntelliSense. It loads the declaration file
 
 Available globals in user code:
 
-- `Image`, `Animation`, `AnimationEncoder`, `Frame`, `GIF`, `ImageType`, `TextLayout`
-- `decode`
+- `Image`, `Animation`, `AnimationEncoder`, `Frame`, `GainMap`, `GIF`, `ImageType`, `TextLayout`
+- `Colors`, `ResizeModes`, `SVGScaleModes`, `FrameDisposalModes`, `decode`
 - `input` (`Uint8Array` containing the selected file: a sample image or the uploaded one)
 - `loadFont(id)` (a bundled font's file, e.g. `await loadFont('inter')`; the Fonts button lists them)
 - `loadSample(id)` (a sample image's file, e.g. to combine it with the input)

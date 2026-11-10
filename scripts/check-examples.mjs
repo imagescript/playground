@@ -5,6 +5,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import ts from 'typescript';
+import * as imagescript from 'imagescript';
 import { playgroundGlobals } from '../src/lib/globals.ts';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -16,6 +17,8 @@ const files = readdirSync(join(root, 'examples')).filter((file) => file.endsWith
   .filter((file) => !ids.length || ids.includes(file.slice(0, -3)))
   .map((file) => join(root, 'examples', file));
 const globals = join(root, 'playground-globals.d.ts');
+const missingGlobals = Object.keys(imagescript).filter((name) => !playgroundGlobals.includes(`declare const ${name}:`));
+if (missingGlobals.length) throw new Error(`ImageScript exports missing playground globals: ${missingGlobals.join(', ')}`);
 
 const options = {
   allowJs: true, checkJs: true, noEmit: true, strict: true, target: ts.ScriptTarget.ESNext,

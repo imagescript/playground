@@ -7,6 +7,7 @@ declare const Image: typeof import('imagescript').Image;
 declare const Animation: typeof import('imagescript').Animation;
 declare const AnimationEncoder: typeof import('imagescript').AnimationEncoder;
 declare const Frame: typeof import('imagescript').Frame;
+declare const GainMap: typeof import('imagescript').GainMap;
 declare const GIF: typeof import('imagescript').GIF;
 declare const ImageType: typeof import('imagescript').ImageType;
 declare const TextLayout: typeof import('imagescript').TextLayout;
