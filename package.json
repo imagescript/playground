@@ -14,7 +14,7 @@
     "test": "node scripts/check-examples.mjs && node scripts/run-examples.mjs"
   },
   "dependencies": {
-    "imagescript": "3.20.2",
+    "imagescript": "3.20.3",
     "monaco-editor": "0.57.0"
   },
   "devDependencies": {
