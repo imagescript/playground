@@ -56,7 +56,7 @@ for (const example of examples.filter((entry) => !ids.length || ids.includes(ent
     let description;
     if (result instanceof Uint8Array) {
       const type = ImageType.getType(result);
-      const image = type && await imagescript.decode(result, true);
+      const image = type && await imagescript.decode(result, { onlyFirstFrame: true });
       description = `${result.length} bytes ${type ?? 'binary'}${image ? ` ${image.width}x${image.height}` : ''}`;
       if (out) await writeFile(join(out, `${example.id}.${type ?? 'bin'}`), result);
     } else if (result !== undefined) description = JSON.stringify(result).slice(0, 80);

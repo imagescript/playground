@@ -23,13 +23,13 @@ for (let n = 0; n < 7; n++) {
   const y = Math.floor(rand() * (out.height - 40));
   const sliceHeight = 6 + Math.floor(rand() * 30);
   const dx = shift + Math.floor(rand() * shift * 5);
-  const slice = out.region(0, y, out.width, sliceHeight);
+  const slice = out.extract(0, y, out.width, sliceHeight);
   out.composite(slice, { x: dx, y });
 }
 
 // CRT scanlines
 for (let y = 0; y < out.height; y += 4) {
-  out.drawBox(0, y, out.width, 1, 0x00000055);
+  out.composite(new Image(out.width, 1).fill(0x00000055), { x: 0, y: y });
 }
 
 return out.encodeJPEG({ quality: 92 });

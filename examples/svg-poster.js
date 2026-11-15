@@ -52,5 +52,5 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.
 </svg>`;
 
 // The <image href="photo"> shows the input: images are given by their href, no data: URI needed
-const poster = await Image.renderSVG(svg, { fonts: [inter], images: { photo: input } });
+const poster = await Image.renderSVG(svg, { font: [inter], images: { photo: input } });
 return poster.encodeJPEG({ quality: 90 });

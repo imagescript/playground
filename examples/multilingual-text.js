@@ -18,7 +18,7 @@ canvas.composite(title, { x: 40, y: 28 });
 
 for (const [i, [language, text]] of lines.entries()) {
   const y = 90 + i * rowHeight;
-  canvas.drawBox(30, y, width - 60, rowHeight - 14, i % 2 ? 0x1e293bff : 0x172033ff);
+  canvas.composite(new Image(width - 60, rowHeight - 14).fill(i % 2 ? 0x1e293bff : 0x172033ff), { x: 30, y: y });
   const label = await Image.renderText(language.toUpperCase(), { font: fontList, size: 20, color: 0x94a3b8ff, variations: { weight: 600 } });
   canvas.composite(label, { x: 56, y: y + Math.round((rowHeight - 14 - label.height) / 2) });
   const line = await Image.renderText(text, { font: fontList, size: 46, color: 0xffffffff });

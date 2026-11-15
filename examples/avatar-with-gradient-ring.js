@@ -5,7 +5,7 @@ const ring = 16;
 const total = size + ring * 2;
 
 // Fill a square and cut it into a circle with a softly feathered edge
-const avatar = img.cover(size, size).cropCircle({ feathering: 0.02 });
+const avatar = img.resize({ width: size, height: size, fit: 'cover' }).cropCircle({ feathering: 0.02 });
 
 // A gradient disc that is slightly larger than the avatar
 const canvas = Image.linearGradient(total, total, { stops: [0xff7a18ff, 0xff2d75ff, 0x7c3aedff], angle: 135 }).cropCircle();

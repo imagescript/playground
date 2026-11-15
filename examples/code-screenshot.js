@@ -4,7 +4,7 @@ const source = `// resize every image in a folder to a thumbnail
 const thumbnails = await Promise.all(files.map(async (file) => {
   const image = await Image.decode(await read(file));
   if (image.width <= 640 && image.height !== 0) return image;
-  return image.cover(640, 360).sharpen({ amount: 0.4 });
+  return image.resize({ width: 640 }).sharpen({ amount: 0.4 });
 }));`;
 
 const colors = { comment: '#6a737d', keyword: '#ff7b72', string: '#a5d6ff', number: '#79c0ff', call: '#d2a8ff', operator: '#ff7b72', plain: '#e6edf3' };
@@ -37,7 +37,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${
     lines.map((line, i) => `<tspan x="${pad}" y="${80 + i * lineHeight}">${line}</tspan>`).join('')
   }</text>
 </svg>`;
-const card = await Image.renderSVG(svg, { fonts: [fira] });
+const card = await Image.renderSVG(svg, { font: [fira] });
 
 // The card on a gradient backdrop, with a soft shadow under it (the margin leaves room for the shadow)
 const margin = 70;

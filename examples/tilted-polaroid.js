@@ -3,7 +3,7 @@ const img = await Image.decode(input);
 // A rotation by degrees (clockwise is positive) as the matrix transform() takes
 const rotation = (degrees) => {
   const a = (degrees * Math.PI) / 180;
-  return [Math.cos(a), Math.sin(a), -Math.sin(a), Math.cos(a), 0, 0];
+  return /** @type {const} */ ([Math.cos(a), Math.sin(a), -Math.sin(a), Math.cos(a), 0, 0]);
 };
 const caveat = await loadFont('caveat');
 const caption = 'Summer at the lake, 2026';
@@ -13,7 +13,7 @@ const border = 36;
 const bottom = 110;
 
 // Slightly faded film look
-const photo = img.cover(photoSize, photoSize).saturation(0.85).gamma(1.05).contrast(0.95);
+const photo = img.resize({ width: photoSize, height: photoSize, fit: 'cover' }).saturation(0.85).gamma(1.05).contrast(0.95);
 
 // The paper
 const paper = new Image(photoSize + border * 2, photoSize + border + bottom).fill(0xfbf8f1ff);

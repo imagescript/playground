@@ -20,13 +20,13 @@ for (let i = 0; i < frameCount; i++) {
   const regionHeight = Math.round(Math.min(img.height, regionWidth * height / width));
   const x = Math.round((img.width - regionWidth) * (0.5 + (focus.x - 0.5) * t));
   const y = Math.round((img.height - regionHeight) * (0.5 + (focus.y - 0.5) * t));
-  const frame = img.region(x, y, regionWidth, regionHeight).cover(width, height);
+  const frame = img.extract(x, y, regionWidth, regionHeight).resize({ width: width, height: height, fit: 'cover' });
 
   // the caption fades in during the second half
   const alpha = Math.max(0, Math.min(1, (i / (frameCount - 1) - 0.45) / 0.35));
   if (alpha > 0) frame.composite(caption.clone().opacity(alpha), { x: 24, y: height - caption.height - 20 });
 
-  frames.push(Frame.from(frame, { duration: i === frameCount - 1 ? 1500 : 70 }));
+  frames.push(new Frame(frame, { duration: i === frameCount - 1 ? 1500 : 70 }));
 }
 
 const animation = new Animation(frames);

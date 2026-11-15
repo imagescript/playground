@@ -16,14 +16,14 @@ const encoder = Animation.webpEncoder(width, height, { quality: 80 });
 
 for (let step = 0; step < steps; step++) {
   const frame = frames[step % frames.length];
-  const photo = frame.clone().crop(crop.x, crop.y, crop.width, crop.height).resize(panel.width, panel.height).greyscale().contrast(1.4);
+  const photo = frame.image.clone().crop(crop.x, crop.y, crop.width, crop.height).resize(panel.width, panel.height).grayscale().contrast(1.4);
   const canvas = new Image(width, height).fill(0x111111ff);
 
   for (let p = 0; p < 4; p++) {
     // map the grey levels onto a two-color gradient whose hues turn a bit every frame
     const hue = (p / 4 + step / steps) % 1;
-    const [r0, g0, b0] = Colors.toRGB(Colors.fromHSL(hue, 0.85, 0.22));
-    const [r1, g1, b1] = Colors.toRGB(Colors.fromHSL((hue + 0.45) % 1, 0.95, 0.72));
+    const [r0, g0, b0] = Colors.toRGB(Colors.fromHSL(hue * 360, 0.85, 0.22));
+    const [r1, g1, b1] = Colors.toRGB(Colors.fromHSL(((hue + 0.45) % 1) * 360, 0.95, 0.72));
     // the red channel (all three are equal in a greyscale photo) times the span between the colors, plus the dark one
     const tinted = photo.clone().colorMatrix([
       (r1 - r0) / 255, 0, 0, 0, r0 / 255,
