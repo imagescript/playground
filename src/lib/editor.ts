@@ -116,34 +116,38 @@ function configureMonaco(): void {
     }
   });
 
+  // The colours of the docs (imagescript.dev): the page colours of src/app.css, and the code colours of GitHub's themes
+  // that the docs' code blocks use (github-dark-default and github-light-default)
+
   // Dark Theme
   monaco.editor.defineTheme('imagescript-dark', {
     base: 'vs-dark',
     inherit: true,
     rules: [
-      { token: 'comment', foreground: '788493', fontStyle: 'italic' },
-      { token: 'string', foreground: 'B4C99C' },
-      { token: 'keyword', foreground: 'C792EA' },
-      { token: 'number', foreground: 'D9A66C' }
+      { token: 'comment', foreground: '8B949E', fontStyle: 'italic' },
+      { token: 'string', foreground: 'A5D6FF' },
+      { token: 'keyword', foreground: 'FF7B72' },
+      { token: 'number', foreground: '79C0FF' },
+      { token: 'type.identifier', foreground: 'FFA657' }
     ],
     colors: {
-      'editor.background': '#111418',
-      'editor.foreground': '#DCE2E9',
-      'editorLineNumber.foreground': '#56616D',
-      'editorLineNumber.activeForeground': '#AAB5C1',
-      'editorCursor.foreground': '#8DB9F4',
-      'editor.selectionBackground': '#314253',
-      'editor.inactiveSelectionBackground': '#263440',
-      'editor.lineHighlightBackground': '#171C22',
-      'editorIndentGuide.background1': '#252C34',
-      'editorIndentGuide.activeBackground1': '#465260',
-      'editorWidget.background': '#171C22',
-      'editorWidget.border': '#303A45',
-      'editorSuggestWidget.background': '#171C22',
-      'editorSuggestWidget.border': '#303A45',
-      'editorSuggestWidget.selectedBackground': '#263440',
-      'editorHoverWidget.background': '#171C22',
-      'editorHoverWidget.border': '#303A45'
+      'editor.background': '#12151C',
+      'editor.foreground': '#E7E9EF',
+      'editorLineNumber.foreground': '#5D6474',
+      'editorLineNumber.activeForeground': '#9AA1B1',
+      'editorCursor.foreground': '#F28DB2',
+      'editor.selectionBackground': '#3A2B3A',
+      'editor.inactiveSelectionBackground': '#2C1D27',
+      'editor.lineHighlightBackground': '#1A1E28',
+      'editorIndentGuide.background1': '#232834',
+      'editorIndentGuide.activeBackground1': '#3A4152',
+      'editorWidget.background': '#1A1E28',
+      'editorWidget.border': '#2A2F3C',
+      'editorSuggestWidget.background': '#1A1E28',
+      'editorSuggestWidget.border': '#2A2F3C',
+      'editorSuggestWidget.selectedBackground': '#2C1D27',
+      'editorHoverWidget.background': '#1A1E28',
+      'editorHoverWidget.border': '#2A2F3C'
     }
   });
 
@@ -155,26 +159,27 @@ function configureMonaco(): void {
       { token: 'comment', foreground: '6E7781', fontStyle: 'italic' },
       { token: 'string', foreground: '0A3069' },
       { token: 'keyword', foreground: 'CF222E' },
-      { token: 'number', foreground: '0550AE' }
+      { token: 'number', foreground: '0550AE' },
+      { token: 'type.identifier', foreground: '953800' }
     ],
     colors: {
       'editor.background': '#FFFFFF',
-      'editor.foreground': '#24292F',
-      'editorLineNumber.foreground': '#8C959F',
-      'editorLineNumber.activeForeground': '#24292F',
-      'editorCursor.foreground': '#0969DA',
-      'editor.selectionBackground': '#BBDFFF',
-      'editor.inactiveSelectionBackground': '#E8F3FF',
-      'editor.lineHighlightBackground': '#F6F8FA',
-      'editorIndentGuide.background1': '#D8DEE4',
-      'editorIndentGuide.activeBackground1': '#8C959F',
+      'editor.foreground': '#1B1F29',
+      'editorLineNumber.foreground': '#8A91A0',
+      'editorLineNumber.activeForeground': '#1B1F29',
+      'editorCursor.foreground': '#B62E5F',
+      'editor.selectionBackground': '#F6CBDA',
+      'editor.inactiveSelectionBackground': '#FBE9F0',
+      'editor.lineHighlightBackground': '#F4F5F8',
+      'editorIndentGuide.background1': '#E3E5EB',
+      'editorIndentGuide.activeBackground1': '#8A91A0',
       'editorWidget.background': '#FFFFFF',
-      'editorWidget.border': '#D0D7DE',
+      'editorWidget.border': '#E3E5EB',
       'editorSuggestWidget.background': '#FFFFFF',
-      'editorSuggestWidget.border': '#D0D7DE',
-      'editorSuggestWidget.selectedBackground': '#E8F3FF',
+      'editorSuggestWidget.border': '#E3E5EB',
+      'editorSuggestWidget.selectedBackground': '#FBE9F0',
       'editorHoverWidget.background': '#FFFFFF',
-      'editorHoverWidget.border': '#D0D7DE'
+      'editorHoverWidget.border': '#E3E5EB'
     }
   });
 }
