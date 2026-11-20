@@ -3,7 +3,7 @@ const img = await Image.decode(input);
 
 const crop = 240;
 const zoom = 2;
-const source = img.cover(600, 600).crop(180, 110, crop, crop);
+const source = img.resize({ width: 600, height: 600, fit: 'cover' }).crop(180, 110, crop, crop);
 
 const quality = 30;
 const codecs = [
@@ -31,7 +31,7 @@ for (const [i, { name, encode }] of codecs.entries()) {
 
   const x = gap + (i % columns) * (tile + gap);
   const y = gap + Math.floor(i / columns) * (tile + labelHeight);
-  sheet.composite(decoded.scale(zoom, { mode: ResizeModes.NEAREST_NEIGHBOR }), { x, y });
+  sheet.composite(decoded.scale(zoom, { mode: 'nearest-neighbor' }), { x, y });
   sheet.composite(await text(name, 26, 0xffffffff, 700), { x, y: y + tile + 10 });
   sheet.composite(await text(`${(bytes.length / 1024).toFixed(1)} KB · ${milliseconds.toFixed(0)} ms`, 20, 0x9ca3afff), { x: x + 150, y: y + tile + 14 });
 }
