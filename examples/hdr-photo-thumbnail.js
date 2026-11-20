@@ -2,13 +2,13 @@ const inter = await loadFont('inter');
 const photo = await Image.decode(input);
 const map = photo.gainMap;
 
-if (map) console.log(`Gain map: ${map.width}×${map.height}, highlights up to ${(2 ** Math.max(...map.gainMapMax)).toFixed(1)}× as bright on HDR displays`);
+if (map) console.log(`Gain map: ${map.width}×${map.height}, highlights up to ${(2 ** Math.max(...map.max)).toFixed(1)}× as bright on HDR displays`);
 else console.log('No gain map in this image: try the Concorde sample');
 
 // the same thumbnail twice: the gain map follows cover(), the right copy has it removed
 const tile = 560;
 const gap = 24;
-const hdr = photo.clone().cover(tile, tile);
+const hdr = photo.clone().resize({ width: tile, height: tile, fit: 'cover' });
 const sdr = hdr.clone();
 sdr.gainMap = null;
 

@@ -8,18 +8,14 @@ declare const Animation: typeof import('imagescript').Animation;
 declare const AnimationEncoder: typeof import('imagescript').AnimationEncoder;
 declare const Frame: typeof import('imagescript').Frame;
 declare const GainMap: typeof import('imagescript').GainMap;
-declare const GIF: typeof import('imagescript').GIF;
+declare const LimitError: typeof import('imagescript').LimitError;
 declare const ImageType: typeof import('imagescript').ImageType;
-declare const TextLayout: typeof import('imagescript').TextLayout;
 declare const decode: typeof import('imagescript').decode;
 declare const Colors: typeof import('imagescript').Colors;
-declare const ResizeModes: typeof import('imagescript').ResizeModes;
-declare const SVGScaleModes: typeof import('imagescript').SVGScaleModes;
-declare const FrameDisposalModes: typeof import('imagescript').FrameDisposalModes;
 /** The input image's file: the selected sample or the uploaded image */
 declare const input: Uint8Array;
 /**
- * Loads one of the playground's fonts (TrueType), for Image.renderText() or renderSVG()'s fonts:
+ * Loads one of the playground's fonts (TrueType), for Image.renderText() or renderSVG()'s font:
 ${fonts.map((font) => ` * - '${font.id}': ${font.name} (${font.category}, ${(font.size / 1048576).toFixed(1)} MB): ${font.notes}`).join('\n')}
  */
 declare function loadFont(id: ${fonts.map((font) => `'${font.id}'`).join(' | ')}): Promise<Uint8Array>;

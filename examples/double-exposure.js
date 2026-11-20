@@ -2,8 +2,8 @@ const [img, city] = await Promise.all([Image.decode(input), loadSample('city-nig
 
 const width = 1000;
 const height = 1000;
-const portrait = img.cover(width, height).greyscale().contrast(1.6).brightness(1.1);
-const overlay = city.cover(width, height).flip('horizontal').saturation(1.3);
+const portrait = img.resize({ width: width, height: height, fit: 'cover' }).grayscale().contrast(1.6).brightness(1.1);
+const overlay = city.resize({ width: width, height: height, fit: 'cover' }).flip('horizontal').saturation(1.3);
 
 // fade the overlay out from the center (alpha by distance)
 const pixels = overlay.bitmap;

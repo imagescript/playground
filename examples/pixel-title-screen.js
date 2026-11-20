@@ -3,7 +3,7 @@ const img = await Image.decode(input);
 
 const width = 256;
 const height = 144;
-const screen = img.cover(width, height).saturation(1.4).contrast(1.2);
+const screen = img.resize({ width: width, height: height, fit: 'cover' }).saturation(1.4).contrast(1.2);
 
 // posterize: 4 levels per channel (64 colors)
 const levels = 4;
@@ -28,4 +28,4 @@ await shadowed('QUEST', 0xf472b6ff, 48, 16);
 await shadowed('PRESS START', 0xffffffff, 112, 8);
 await shadowed('© 2026', 0xa5b4fcff, 128, 8);
 
-return screen.scale(5, { mode: ResizeModes.NEAREST_NEIGHBOR }).encodePNG();
+return screen.scale(5, { mode: 'nearest-neighbor' }).encodePNG();

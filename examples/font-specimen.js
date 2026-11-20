@@ -19,12 +19,12 @@ const canvas = new Image(width, 40 + specimens.length * rowHeight).fill(0xfafaf9
 
 for (const [i, { id, name, text, size, variations }] of specimens.entries()) {
   const y = 20 + i * rowHeight;
-  if (i) canvas.drawBox(40, y - 1, width - 80, 1, 0xe7e5e4ff);
+  if (i) canvas.composite(new Image(width - 80, 1).fill(0xe7e5e4ff), { x: 40, y: y - 1 });
   const title = await Image.renderText(`${name}  ·  loadFont('${id}')`, { font: inter, size: 18, color: 0x78716cff, variations: { weight: 600 } });
   canvas.composite(title, { x: 40, y: y + 14 });
   const sample = await Image.renderText(text, {
     font: await loadFont(id), size,
-    color: 0x1c1917ff, variations, layout: new TextLayout({ maxWidth: width - 80, maxHeight: 70 })
+    color: 0x1c1917ff, variations, width: width - 80, height: 70
   });
   canvas.composite(sample, { x: 40, y: y + 44 });
 }

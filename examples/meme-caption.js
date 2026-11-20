@@ -13,7 +13,7 @@ const caption = (text) => Image.renderText(text.toUpperCase(), {
   strokeWidth: Math.max(3, Math.round(size / 14)),
   strokeColor: 0x000000ff,
   variations: { weight: 900, opticalSize: 32 },
-  layout: new TextLayout({ maxWidth: img.width - pad * 2, horizontalAlign: 'center' })
+  width: img.width - pad * 2, horizontalAlign: 'center'
 });
 
 const upper = await caption(top);

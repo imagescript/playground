@@ -1,11 +1,11 @@
 const inter = await loadFont('inter');
-const photo = (await Image.decode(input)).cover(640, 640);
+const photo = (await Image.decode(input)).resize({ width: 640, height: 640, fit: 'cover' });
 const map = photo.gainMap;
 if (!map) throw new Error('This image has no gain map: try the Concorde sample');
 
 // the map's value v (0-255) boosts the linear light by 2^(min + (max - min) * (v / 255)^(1 / gamma))
 const boost = map.image.clone().resize(photo.width, photo.height).bitmap;
-const peak = 2 ** Math.max(...map.gainMapMax);
+const peak = 2 ** Math.max(...map.max);
 const toLinear = (v) => ((v /= 255) <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
 const toSRGB = (v) => 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055);
 
@@ -18,7 +18,7 @@ for (let i = 0; i < photo.bitmap.length; i += 4) {
   for (let c = 0; c < 3; c++) {
     const light = toLinear(photo.bitmap[i + c]);
     const v = boost[i + c] / 255;
-    const gain = map.gainMapMin[c] + (map.gainMapMax[c] - map.gainMapMin[c]) * v ** (1 / map.gamma[c]);
+    const gain = map.min[c] + (map.max[c] - map.min[c]) * v ** (1 / map.gamma[c]);
     sdr.bitmap[i + c] = toSRGB(light / peak);
     hdr.bitmap[i + c] = toSRGB(Math.min(1, ((light + map.offsetSDR[c]) * 2 ** gain - map.offsetHDR[c]) / peak));
   }
@@ -33,10 +33,10 @@ const frameCount = 40;
 for (let i = 0; i < frameCount; i++) {
   const t = 0.5 - 0.5 * Math.cos((i / frameCount) * 2 * Math.PI);
   const split = Math.round(40 + t * (photo.width - 80));
-  const frame = sdr.clone().composite(hdr.region(0, 0, split, photo.height));
-  frame.drawBox(split - 1, 0, 2, photo.height, 0xffffffff);
+  const frame = sdr.clone().composite(hdr.extract(0, 0, split, photo.height));
+  frame.composite(new Image(2, photo.height).fill(0xffffffff), { x: split - 1, y: 0 });
   frame.composite(left, { x: 12, y: 12 }).composite(right, { x: photo.width - right.width - 12, y: 12 });
-  frames.push(Frame.from(frame, { duration: 40 }));
+  frames.push(new Frame(frame, { duration: 40 }));
 }
 
 console.log(`Highlights up to ${peak.toFixed(1)}× as bright`);

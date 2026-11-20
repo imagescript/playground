@@ -30,7 +30,7 @@ export const exampleList = [
     id: 'animated-ken-burns',
     title: 'Animated WebP: Ken Burns Zoom',
     sample: 'landscape',
-    description: 'A slow zoom and pan across the photo with a caption fading in, as a looping animated WebP: each frame is a cover() of a region shrinking towards a focus point. encodeGIF() and encodeAPNG() take the same frames; for photos the GIF is about four times larger.'
+    description: 'A slow zoom and pan across the photo with a caption fading in, as a looping animated WebP: each frame is a region resized to fill the frame, shrinking towards a focus point. encodeGIF() and encodeAPNG() take the same frames; for photos the GIF is about four times larger.'
   },
   {
     id: 'animated-pop-art',
@@ -100,7 +100,7 @@ export const exampleList = [
     id: 'meme-caption',
     title: 'Meme Caption with Emoji',
     sample: 'dog',
-    description: 'The classic meme layout: heavy white capitals with a black outline, wrapped and centered at the top and bottom with TextLayout. The emoji come from a fallback font, so the caption can mix both.'
+    description: 'The classic meme layout: heavy white capitals with a black outline, wrapped and centered at the top and bottom with the text layout options. The emoji come from a fallback font, so the caption can mix both.'
   },
   {
     id: 'multilingual-text',

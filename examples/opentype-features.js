@@ -26,13 +26,12 @@ canvas.composite(await label('WITH THE FEATURE', 0x9ca3afff, 700, 18), { x: colu
 for (const [i, { font, tag, name, text, value }] of rows.entries()) {
   const features = { [tag]: value };
   const y = 90 + i * rowHeight;
-  if (i % 2 === 0) canvas.drawBox(0, y - 8, canvas.width, rowHeight, 0xf5f7fbff);
+  if (i % 2 === 0) canvas.composite(new Image(canvas.width, rowHeight).fill(0xf5f7fbff), { x: 0, y: y - 8 });
   canvas.composite(await label(`${tag}`, 0x111827ff, 700, 26), { x: columns[0], y: y + 14 });
   canvas.composite(await label(name, 0x6b7280ff, 400, 18), { x: columns[0], y: y + 52 });
   // multi-line text: lines are aligned to the right, so the tabular figures line up
-  const layout = new TextLayout({ horizontalAlign: 'right' });
-  canvas.composite(await Image.renderText(text, { font, size, color: 0x374151ff, layout }), { x: columns[1], y: y + (text.includes('\n') ? -6 : 12) });
-  canvas.composite(await Image.renderText(text, { font, size, color: 0x2563ebff, layout, features }), { x: columns[2], y: y + (text.includes('\n') ? -6 : 12) });
+  canvas.composite(await Image.renderText(text, { font, size, color: 0x374151ff, horizontalAlign: 'right' }), { x: columns[1], y: y + (text.includes('\n') ? -6 : 12) });
+  canvas.composite(await Image.renderText(text, { font, size, color: 0x2563ebff, horizontalAlign: 'right', features }), { x: columns[2], y: y + (text.includes('\n') ? -6 : 12) });
 }
 
 return canvas.encodePNG();

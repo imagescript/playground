@@ -5,7 +5,7 @@ const author = 'Alan Kay';
 const size = 1080;
 const pad = 120;
 
-const background = img.cover(size / 4, size / 4).blur(6).cover(size, size).brightness(0.45);
+const background = img.resize({ width: size / 4, height: size / 4, fit: 'cover' }).blur(6).resize({ width: size, height: size, fit: 'cover' }).brightness(0.45);
 const card = new Image(size, size).composite(background);
 
 const mark = await Image.renderText('“', { font: playfair, size: 260, color: 0xfbbf24cc, variations: { weight: 900 } });
@@ -13,7 +13,7 @@ const text = await Image.renderText(quote, {
   font: playfair, size: 72,
   color: 0xffffffff,
   variations: { weight: 600 },
-  layout: new TextLayout({ maxWidth: size - pad * 2, horizontalAlign: 'center' })
+  width: size - pad * 2, horizontalAlign: 'center'
 });
 const credit = await Image.renderText(`— ${author}`, { font: playfair, size: 40, color: 0xfde68aff, features: { smcp: true } });
 
