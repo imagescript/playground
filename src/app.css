@@ -1,139 +1,112 @@
+/* The colours are the ones of the docs (imagescript.dev, media/docs.css of the ImageScript repository), which come from the
+   logo (#141821 tile, #E85D8C / #4C7DF0 / #8E6CEF / #FFC857 squares), darkened or lightened where text needs contrast.
+   Change them in both places. Everything else is derived from these. */
 :root {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-text: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --radius: 8px;
+
+  font-family: var(--font-text);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  
-  /* Dark Mode Defaults */
+
+  /* dark (the default) */
   color-scheme: dark;
-  color: #e5e7eb;
-  background: #0d0f12;
-  
-  --bg: #0d0f12;
-  --panel: #13161a;
-  --panel-top: #171a1f;
-  --panel-header: #15181d;
-  --border: #292e35;
-  --border-soft: #20252b;
-  --muted: #858d98;
-  --muted-dim: #626b76;
-  --text: #e5e7eb;
-  --accent: #c2ccd8;
-  --accent-hover: #f0f3f6;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-
-  /* UI-Element-Farben (Dark) */
-  --topbar-bg: #101216;
-  --topbar-link: #9ba3ad;
-  --topbar-link-hover: #f0f2f4;
-  --select-color: #e0e4e9;
-  --select-option-bg: #171a1f;
-  --file-btn-color: #c9cfd7;
-  --file-btn-hover: #ffffff;
-  --quiet-btn-color: #969eaa;
-  --quiet-btn-hover-bg: #20242a;
-  --quiet-btn-hover-border: #343b44;
-  --kbd-bg: #1b1f25;
-  --kbd-border: #363d46;
-  --kbd-color: #aab2bc;
-  
-  /* Run-Button & Shortcut (Dark) */
-  --run-btn-bg: #1f6feb;
-  --run-btn-color: #ffffff;
-  --run-btn-hover: #388bfd;
-  --run-btn-border: #388bfd;
-  --run-kbd-bg: rgba(255, 255, 255, 0.15);
-  --run-kbd-border: rgba(255, 255, 255, 0.2);
-  --run-kbd-color: #ffffff;
-
-  --file-tab-border: #aeb9c6;
-  --file-tab-color: #dfe4ea;
-  --file-dot-bg: #b4c4d6;
-  --editor-bg: #111315;
-  --editor-footer-bg: #14171b;
-  --download-btn-bg: #20252b;
-  --download-btn-border: #39414a;
-  --download-btn-color: #c9d1da;
-  --download-btn-hover: #2a3038;
-  --output-stage-bg: #101317;
-  --checker-1: #171b20;
-  --preview-wrap-bg: #161a1f;
-  --preview-wrap-border: #343b44;
-  --stage-error-bg: #211719;
-  --stage-error-border: #5b3436;
-  --stage-error-title: #f0a09a;
-  --stage-error-text: #c98f8c;
-  --value-output-bg: #15191e;
-  --value-output-border: #303740;
-  --console-body-bg: #111418;
-  --console-line-color: #c5cbd2;
-  --console-count-bg: #272d34;
+  --bg: #12151c;
+  --bg-secondary: #1a1e28;
+  --border: #2a2f3c;
+  --text: #e7e9ef;
+  --muted: #9aa1b1;
+  --accent: #f28db2;
+  --accent-hover: #f8a8c6;
+  --on-accent: #12151c;
+  --focus: #7a9df5;
+  --gold: #ffc857;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
     color-scheme: light;
-    color: #1f2328;
-    background: #f6f8fa;
-    
-    --bg: #f6f8fa;
-    --panel: #ffffff;
-    --panel-top: #f3f4f6;
-    --panel-header: #f6f8fa;
-    --border: #d0d7de;
-    --border-soft: #e1e4e8;
-    --muted: #57606a;
-    --muted-dim: #6e7781;
-    --text: #1f2328;
-    --accent: #0969da;
-    --accent-hover: #0550ae;
+    --bg: #ffffff;
+    --bg-secondary: #f4f5f8;
+    --border: #e3e5eb;
+    --text: #1b1f29;
+    --muted: #5d6474;
+    --accent: #b62e5f;
+    --accent-hover: #9a2650;
+    --on-accent: #ffffff;
+    --focus: #4c7df0;
+    --gold: #9a5b00;
+  }
+}
 
-    /* UI-Element-Farben (Light) */
-    --topbar-bg: #ffffff;
-    --topbar-link: #57606a;
-    --topbar-link-hover: #1f2328;
-    --select-color: #1f2328;
-    --select-option-bg: #ffffff;
-    --file-btn-color: #424a53;
-    --file-btn-hover: #0969da;
-    --quiet-btn-color: #57606a;
-    --quiet-btn-hover-bg: #eaeef2;
-    --quiet-btn-hover-border: #d0d7de;
-    --kbd-bg: #f3f4f6;
-    --kbd-border: #d0d7de;
-    --kbd-color: #24292f;
-    
-    /* Run-Button & Shortcut (Light) */
-    --run-btn-bg: #0969da;
-    --run-btn-color: #ffffff;
-    --run-btn-hover: #0860ca;
-    --run-btn-border: #0860ca;
-    --run-kbd-bg: rgba(255, 255, 255, 0.2);
-    --run-kbd-border: rgba(255, 255, 255, 0.3);
-    --run-kbd-color: #ffffff;
+:root {
+  color: var(--text);
+  background: var(--bg);
 
-    --file-tab-border: #0969da;
-    --file-tab-color: #1f2328;
-    --file-dot-bg: #0969da;
-    --editor-bg: #ffffff;
-    --editor-footer-bg: #f6f8fa;
-    --download-btn-bg: #f6f8fa;
-    --download-btn-border: #d0d7de;
-    --download-btn-color: #24292f;
-    --download-btn-hover: #eaeef2;
-    --output-stage-bg: #f8f9fa;
-    --checker-1: #e9ecef;
-    --preview-wrap-bg: #ffffff;
-    --preview-wrap-border: #d0d7de;
-    --stage-error-bg: #ffebe9;
-    --stage-error-border: #ffc0c0;
+  --panel: var(--bg);
+  --panel-top: var(--bg-secondary);
+  --panel-header: var(--bg-secondary);
+  --border-soft: color-mix(in srgb, var(--border) 60%, var(--bg));
+  --muted-dim: color-mix(in srgb, var(--muted) 65%, var(--bg));
+  --hover-bg: color-mix(in srgb, var(--text) 7%, var(--bg));
+
+  --topbar-bg: var(--bg);
+  --topbar-link: var(--muted);
+  --topbar-link-hover: var(--text);
+  --select-color: var(--text);
+  --select-option-bg: var(--bg-secondary);
+  --file-btn-color: color-mix(in srgb, var(--text) 80%, var(--bg));
+  --file-btn-hover: var(--accent);
+  --quiet-btn-color: var(--muted);
+  --quiet-btn-hover-bg: var(--hover-bg);
+  --quiet-btn-hover-border: var(--border);
+  --kbd-bg: var(--bg-secondary);
+  --kbd-border: var(--border);
+  --kbd-color: var(--muted);
+
+  /* the run button is the accent, its shortcut a darker or lighter chip on it */
+  --run-btn-bg: var(--accent);
+  --run-btn-color: var(--on-accent);
+  --run-btn-hover: var(--accent-hover);
+  --run-btn-border: var(--accent);
+  --run-kbd-bg: color-mix(in srgb, var(--on-accent) 16%, transparent);
+  --run-kbd-border: color-mix(in srgb, var(--on-accent) 28%, transparent);
+  --run-kbd-color: var(--on-accent);
+
+  --file-tab-border: var(--accent);
+  --file-tab-color: var(--text);
+  --file-dot-bg: var(--accent);
+  --editor-bg: var(--bg);
+  --editor-footer-bg: var(--bg-secondary);
+  --download-btn-bg: var(--bg-secondary);
+  --download-btn-border: var(--border);
+  --download-btn-color: var(--text);
+  --download-btn-hover: var(--hover-bg);
+  --output-stage-bg: var(--bg-secondary);
+  --checker-1: color-mix(in srgb, var(--text) 5%, var(--bg-secondary));
+  --preview-wrap-bg: var(--bg);
+  --preview-wrap-border: var(--border);
+  --value-output-bg: var(--bg-secondary);
+  --value-output-border: var(--border);
+  --console-body-bg: var(--bg);
+  --console-line-color: color-mix(in srgb, var(--text) 85%, var(--bg));
+  --console-count-bg: var(--border);
+
+  /* errors keep their own red */
+  --stage-error-bg: color-mix(in srgb, #e5484d 12%, var(--bg));
+  --stage-error-border: color-mix(in srgb, #e5484d 38%, var(--bg));
+  --stage-error-title: #e5484d;
+  --stage-error-text: color-mix(in srgb, #e5484d 75%, var(--text));
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
     --stage-error-title: #cf222e;
     --stage-error-text: #a40e26;
-    --value-output-bg: #f6f8fa;
-    --value-output-border: #d0d7de;
-    --console-body-bg: #ffffff;
-    --console-line-color: #24292f;
-    --console-count-bg: #eaeef2;
+    --stage-error-bg: #ffebe9;
+    --stage-error-border: #ffc0c0;
   }
 }
 
@@ -144,7 +117,7 @@ body { min-height: 100vh; background: var(--bg); color: var(--text); }
 button, select { font: inherit; }
 button { cursor: pointer; }
 a { color: inherit; text-decoration: none; }
-button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
 /* --- App Shell & Topbar --- */
 .app-shell { min-height: 100vh; display: flex; flex-direction: column; }
@@ -160,7 +133,7 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid
 
 /* --- Toolbar & Controls --- */
 .main-content { width: min(1480px, calc(100vw - 48px)); margin: 24px auto 32px; flex: 1; display: flex; flex-direction: column; }
-.toolbar { min-height: 65px; padding: 10px 13px; display: flex; align-items: center; justify-content: space-between; gap: 18px; background: var(--panel-top); border: 1px solid var(--border); border-bottom: 0; border-radius: 7px 7px 0 0; }
+.toolbar { min-height: 65px; padding: 10px 13px; display: flex; align-items: center; justify-content: space-between; gap: 18px; background: var(--panel-top); border: 1px solid var(--border); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0; }
 .toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 16px; min-width: 0; }
 .example-select-wrap, .input-file-label { min-width: 0; display: flex; flex-direction: column; gap: 5px; position: relative; }
 .control-label { color: var(--muted); font: 9px var(--mono); letter-spacing: .08em; }
@@ -178,7 +151,7 @@ button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid
 .input-thumb { width: 22px; height: 16px; object-fit: cover; border-radius: 2px; border: 1px solid var(--border); flex: 0 0 auto; background: repeating-conic-gradient(#8884 0 25%, transparent 0 50%) 50% / 8px 8px; }
 .fonts-wrap { position: relative; }
 .fonts-button { font-size: 11px; }
-.fonts-panel { position: absolute; z-index: 20; top: calc(100% + 8px); left: 0; width: min(420px, calc(100vw - 40px)); max-height: min(560px, 70vh); display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 7px; box-shadow: 0 12px 32px #0006; overflow: hidden; }
+.fonts-panel { position: absolute; z-index: 20; top: calc(100% + 8px); left: 0; width: min(420px, calc(100vw - 40px)); max-height: min(560px, 70vh); display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 12px 32px #0006; overflow: hidden; }
 .fonts-panel-header { padding: 11px 13px 9px; display: flex; flex-direction: column; gap: 3px; border-bottom: 1px solid var(--border-soft); color: var(--text); font-size: 12px; font-weight: 600; }
 .fonts-panel-hint { color: var(--muted); font-size: 10px; font-weight: 400; }
 .fonts-panel-hint code, .font-id { font-family: var(--mono); }
@@ -242,7 +215,7 @@ kbd { font: 9px var(--mono); padding: 3px 5px; border: 1px solid var(--kbd-borde
   gap: 1px; 
   background: var(--border); 
   border: 1px solid var(--border); 
-  border-radius: 0 0 7px 7px; 
+  border-radius: 0 0 var(--radius) var(--radius); 
   overflow: visible; 
 }
 .panel { min-width: 0; background: var(--panel); overflow: visible; }
@@ -256,7 +229,7 @@ kbd { font: 9px var(--mono); padding: 3px 5px; border: 1px solid var(--kbd-borde
 .output-title { color: var(--text); font-size: 11px; font-weight: 550; }
 .panel-meta { color: var(--muted); font: 9px var(--mono); }
 .example-description { min-height: 33px; padding: 9px 15px 7px; color: var(--muted); font-size: 12px; line-height: 1.45; border-bottom: 1px solid var(--border-soft); }
-.example-input-hint { display: block; margin-top: 4px; color: #d0a66b; font: 11px var(--mono); }
+.example-input-hint { display: block; margin-top: 4px; color: var(--gold); font: 11px var(--mono); }
 
 .editor-wrap { 
   flex: 1; 
@@ -301,7 +274,7 @@ kbd { font: 9px var(--mono); padding: 3px 5px; border: 1px solid var(--kbd-borde
 .meta-placeholder { color: var(--muted-dim); }
 
 /* --- Console Panel --- */
-.console-panel { margin-top: 12px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.console-panel { margin-top: 12px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 .console-header { height: 38px; padding: 0 13px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-soft); background: var(--panel-header); }
 .console-title-group, .console-header-right { display: flex; align-items: center; gap: 9px; }
 .console-title { color: var(--text); font-size: 10px; font-weight: 550; }
