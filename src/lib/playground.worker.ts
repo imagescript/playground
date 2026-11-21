@@ -6,6 +6,10 @@ type RunRequest = {
   runId: number;
   code: string;
   input: ArrayBuffer;
+} | {
+  // fonts to fetch now, because code about to run uses them
+  type: 'prefetch';
+  fonts: string[];
 };
 
 type ConsoleLevel = 'log' | 'info' | 'warn' | 'error';
@@ -275,6 +279,10 @@ function postBinary(runId: number, bytes: Uint8Array): void {
 }
 
 scope.onmessage = async (event: MessageEvent<RunRequest>) => {
+  if (event.data?.type === 'prefetch') {
+    for (const id of event.data.fonts) if (fonts.some((font) => font.id === id)) void loadFont(id).catch(() => {});
+    return;
+  }
   if (event.data?.type !== 'run') return;
   const { runId } = event.data;
   activeRunId = runId;

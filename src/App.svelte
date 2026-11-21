@@ -3,7 +3,6 @@
   import type { PlaygroundEditor } from './lib/editor';
   import { examples } from './lib/examples';
   import { fonts, samples, type FontId, type SampleId } from './lib/assets';
-  import { createCodeEditor } from './lib/editor';
 
   type LogEntry = { level: 'log' | 'info' | 'warn' | 'error'; message: string };
   type Output = {
@@ -27,6 +26,10 @@
   let editorHost: HTMLDivElement | undefined = undefined;
   let fileInput: HTMLInputElement | undefined;
   let editor: PlaygroundEditor | undefined;
+  // the editor (Monaco) is most of the page's script: it loads after the page is shown and the first example runs
+  let editorLoaded = $state(false);
+  let resolveFirstResult: () => void = () => {};
+  const firstResult = new Promise<void>((resolve) => resolveFirstResult = resolve);
   let code = $state(examples[0].code);
   let selectedExample = $state(examples[0].id);
   let activeExampleDescription = $state(examples[0].description);
@@ -74,13 +77,25 @@
 
     void initEditor();
 
-    editor = createCodeEditor(editorHost!, code, (value) => {
-      code = value;
-      if (window.location.hash.startsWith('#code=')) {
-        window.history.replaceState(null, '', window.location.pathname);
-      }
-    }, () => {
-      void runCode();
+    // start the worker, the fonts of the first example and the sample right away, while the editor loads
+    void ensureWorker().then((instance) => instance.postMessage({ type: 'prefetch', fonts: fontsIn(code) })).catch(() => {});
+
+    // the editor loads once the first result is shown (or after 3 seconds), so on a slow connection the two don't
+    // share the bandwidth: the code is shown as text meanwhile
+    let disposed = false;
+    void Promise.race([firstResult, new Promise((resolve) => window.setTimeout(resolve, 3000))]).then(() => import('./lib/editor')).then(({ createCodeEditor }) => {
+      if (disposed || !editorHost) return;
+      editor = createCodeEditor(editorHost, code, (value) => {
+        code = value;
+        if (window.location.hash.startsWith('#code=')) {
+          window.history.replaceState(null, '', window.location.pathname);
+        }
+      }, () => {
+        void runCode();
+      });
+      editorLoaded = true;
+    }).catch((error) => {
+      errorMessage = `The editor failed to load: ${error instanceof Error ? error.message : String(error)}`;
     });
 
     const handleRunShortcut = (event: KeyboardEvent) => {
@@ -95,6 +110,7 @@
     void selectSample(inputSource === 'custom' ? samples[0].id : inputSource);
 
     return () => {
+      disposed = true;
       window.removeEventListener('keydown', handleRunShortcut, true);
       if (activeRun) window.clearTimeout(activeRun.timeoutId);
       executionWorker?.terminate();
@@ -103,6 +119,11 @@
       if (output?.url) URL.revokeObjectURL(output.url);
     };
   });
+
+  // the fonts code loads by name (`loadFont('inter')`), to fetch them before it runs
+  function fontsIn(source: string): string[] {
+    return [...source.matchAll(/loadFont\(\s*['"]([\w-]+)['"]\s*\)/g)].map((match) => match[1]);
+  }
 
   async function encodeCodeToHash(source: string): Promise<string> {
     const bytes = new TextEncoder().encode(source);
@@ -316,6 +337,7 @@
           running = false;
           errorMessage = `${message.message}${message.stack ? `\n${message.stack}` : ''}`;
           statusMessage = 'Execution failed';
+          resolveFirstResult();
           return;
         }
 
@@ -345,6 +367,7 @@
             elapsedMs
           };
           statusMessage = `Completed in ${formatDuration(elapsedMs)}`;
+          resolveFirstResult();
         }
       };
 
@@ -574,7 +597,9 @@
         <div class="example-description">
           {activeExampleDescription}
         </div>
-        <div class="editor-wrap" bind:this={editorHost}></div>
+        <div class="editor-wrap" bind:this={editorHost}>
+          {#if !editorLoaded}<pre class="editor-placeholder" aria-busy="true">{code}</pre>{/if}
+        </div>
         <div class="editor-footer">
           <span>JavaScript</span>
           <span>{code.split('\n').length} lines</span>

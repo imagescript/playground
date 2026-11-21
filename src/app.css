@@ -266,6 +266,8 @@ kbd { font: 9px var(--mono); padding: 3px 5px; border: 1px solid var(--kbd-borde
   overflow: visible !important; 
 }
 .editor-wrap .monaco-editor { height: 100%; }
+/* the code as plain text until Monaco has loaded, laid out like Monaco's lines so nothing jumps */
+.editor-placeholder { position: absolute; inset: 0; margin: 0; padding: 14px 14px 0 49px; overflow: hidden; color: var(--text); font: 13px/22px var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 2; opacity: 0.85; }
 .editor-wrap .monaco-editor, .editor-wrap .monaco-editor .overflow-guard { border-radius: 0; }
 .editor-wrap .monaco-editor .suggest-widget, .editor-wrap .monaco-editor .parameter-hints-widget, .editor-wrap .monaco-editor .monaco-hover { box-shadow: 0 12px 32px rgba(0,0,0,.15); }
 
