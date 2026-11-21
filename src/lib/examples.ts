@@ -130,6 +130,12 @@ export const exampleList = [
     description: 'The features option turns OpenType features on (true), off (false) or picks an alternate (a number). Each row shows the same text without and with one: tabular figures, slashed zeros, fractions, inferiors, stylistic sets and character variants in Inter, small caps and lining figures in Playfair Display, and Fira Code\'s ligatures turned off.'
   },
   {
+    id: 'open-graph-card',
+    title: 'Open Graph Card (Link Preview)',
+    sample: 'landscape',
+    description: 'The 1200×630 image that shows up when a page is shared: a gradient, a cover with rounded corners and a shadow, the title wrapped to the free width, and the author with a round avatar. Change the `post` object and run it again; on a server the same code makes one card per page, in a few milliseconds.'
+  },
+  {
     id: 'quote-card',
     title: 'Quote Card',
     sample: 'landscape',
