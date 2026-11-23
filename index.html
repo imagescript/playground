@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0d0f12" />
-    <meta name="description" content="Experiment with the ImageScript image processing API. Edit JavaScript, upload an image and inspect the result." />
+    <meta name="theme-color" content="#12151c" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="description" content="Try ImageScript in your browser: write JavaScript that decodes, edits and encodes images, upload a photo and see the result. No install." />
+    <link rel="canonical" href="https://try.imagescript.dev/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://try.imagescript.dev/" />
     <meta property="og:title" content="ImageScript Playground" />
@@ -18,6 +20,9 @@
   </head>
   <body>
     <div id="app"></div>
+    <noscript>
+      <p>ImageScript Playground runs in the browser and needs JavaScript. ImageScript is a pure TypeScript image library for Node.js, Deno, Bun, browsers and edge runtimes: <a href="https://imagescript.dev/">documentation and API reference</a>.</p>
+    </noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
